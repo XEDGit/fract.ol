@@ -7,24 +7,15 @@ int	close(t_vars *vars)
 	exit(0);
 }
 
-void	shift_view(int key, t_vars *vars, double xstep, double ystep)
+double	map(double middle, double win_size, double min, double max)
 {
-	if (key == 125)
-		set_zoom(vars, new_coords(\
-		vars->zoom->xmin, vars->zoom->xmax, \
-		vars->zoom->ymin + ystep, vars->zoom->ymax + ystep));
-	if (key == 126)
-		set_zoom(vars, new_coords(\
-		vars->zoom->xmin, vars->zoom->xmax, \
-		vars->zoom->ymin - ystep, vars->zoom->ymax - ystep));
-	if (key == 123)
-		set_zoom(vars, new_coords(\
-		vars->zoom->xmin - xstep, vars->zoom->xmax - xstep, \
-		vars->zoom->ymin, vars->zoom->ymax));
-	if (key == 124)
-		set_zoom(vars, new_coords(\
-		vars->zoom->xmin + xstep, vars->zoom->xmax + xstep, \
-		vars->zoom->ymin, vars->zoom->ymax));
+	return (middle / win_size * (max - min) + min);
+}
+
+void	error_quit(char *msg)
+{
+	printf("%s", msg);
+	exit(1);
 }
 
 int	key(int key, t_vars *vars)
@@ -34,23 +25,18 @@ int	key(int key, t_vars *vars)
 
 	xstep = fabs(vars->zoom->xmax - vars->zoom->xmin) / 10;
 	ystep = fabs(vars->zoom->ymax - vars->zoom->ymin) / 10;
+	shift_view(key, vars, xstep, ystep);
 	if (key == 53)
 		close(vars);
-	shift_view(key, vars, xstep, ystep);
-	if (key == 43)
+	else if (key == 43 && !COL_SET)
+		vars->colshift -= 10;
+	else if (key == 43 && COL_SET == 2)
 		vars->colshift -= 1;
-	if (key == 47)
+	else if (key == 47 && !COL_SET)
+		vars->colshift += 10;
+	else if (key == 47 && COL_SET == 2)
 		vars->colshift += 1;
+	else if (key == 15)
+		set_zoom(vars, new_coords(-2.5, 1.5, -2, 2));
 	return (0);
-}
-
-void	error_quit(void)
-{
-	printf(HELP_MSG);
-	exit(1);
-}
-
-double	map(double middle, double win_size, double min, double max)
-{
-	return (middle / win_size * (max - min) + min);
 }
