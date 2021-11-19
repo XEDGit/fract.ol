@@ -97,14 +97,14 @@ size_t	color_set(int n, int shift, int set)
 
 	if (set == 1)
 		return (modulo_colors(n));
-	if (n == MAX_ITER || !n)
+	if (!set)
+		return ((MAX_ITER - n) * 255 * (shift + 1));
+	if (n == MAX_ITER)
 		return (0x0);
 	if (shift + MAX_ITER < n)
 		shift = MAX_ITER;
 	else
 		shift += MAX_ITER;
-	if (!set)
-		return ((MAX_ITER - n) * 255);
 	res = map(n, shift, 0, 0xFFFFFF);
 	return (res);
 }

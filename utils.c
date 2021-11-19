@@ -28,14 +28,10 @@ int	key(int key, t_vars *vars)
 	shift_view(key, vars, xstep, ystep);
 	if (key == 53)
 		close(vars);
-	else if (key == 43 && !COL_SET)
+	else if (key == 43)
 		vars->colshift -= 10;
-	else if (key == 43 && COL_SET == 2)
-		vars->colshift -= 1;
-	else if (key == 47 && !COL_SET)
+	else if (key == 47)
 		vars->colshift += 10;
-	else if (key == 47 && COL_SET == 2)
-		vars->colshift += 1;
 	else if (key == 15)
 		set_zoom(vars, new_coords(-2.5, 1.5, -2, 2));
 	return (0);

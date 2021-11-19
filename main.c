@@ -63,7 +63,7 @@ int	main(int argc, char **argv)
 	vars.sizey = WIN_SIZE;
 	check_args(&vars, argv, argc);
 	vars.zoom = 0;
-	set_zoom(&vars, new_coords(-2.5, 1.5, -2, 2));
+	set_zoom(&vars, new_coords(-2, 2, -2, 2));
 	vars.mlx = mlx_init();
 	vars.mlx_win = mlx_new_window(vars.mlx, vars.sizex, vars.sizey, "fract.ol");
 	mlx_mouse_hook(vars.mlx_win, zoom, &vars);
