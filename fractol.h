@@ -38,26 +38,26 @@ typedef struct s_vars
 }	t_vars;
 
 void			draw_set(t_vars *vars);
-size_t			calc_mandel(long double a, long double b, long double oa, \
-long double ob);
-size_t			calc_burning_ship(long double a, long double b, long double \
-oa, long double ob);
 size_t			color_set(int n, int shift, int set);
 size_t			modulo_colors(int n);
-void			shift_view(int key, t_vars *vars, long double xstep, \
-long double ystep);
 int				win_close(t_vars *vars, char *msg);
 int				key(int key, t_vars *vars);
 void			img_mlx_pixel_put(t_data *data, int x, int y, int color);
-long double		map(long double middle, long double win_size, \
-long double min, long double max);
-t_coords		*new_coords(long double xmin, long double xmax, \
-long double ymin, long double ymax);
 void			set_zoom(t_vars *vars, t_coords *coords);
 int				zoom(int key, int x, int y, t_vars *vars);
 void			shift_zoom(t_vars *vars, int x, int y, int direction);
 long double		ft_atof(char *s);
 void			atof_cycle(char *s, long double *res);
+void			shift_view(int key, t_vars *vars, long double xstep, \
+long double ystep);
+long double		map(long double middle, long double win_size, \
+long double min, long double max);
+t_coords		*new_coords(long double xmin, long double xmax, \
+long double ymin, long double ymax);
+size_t			calc_mandel(long double a, long double b, long double oa, \
+long double ob);
+size_t			calc_burning_ship(long double a, long double b, long double \
+oa, long double ob);
 
 # define HELP_MSG "Usage: ./fractol <lowcase initial\
  of set's name> <optional args>\n\n\

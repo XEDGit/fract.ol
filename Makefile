@@ -9,9 +9,15 @@ STEP := 0.001
 all:
 	@gcc $(SRCS) $(FLAGS) -Imlx -c -O3 
 	@gcc $(OUTS) -lm -L. -lmlx -framework OpenGL -framework AppKit -o fractol -fsanitize=address
-	@make clean
 clean:
 	@rm $(OUTS)
+fclean:
+	@rm $(OUTS) fractol
+re:
+	@make fclean
+	@make all
+bonus:
+	@make all
 m:
 	@make all
 	./fractol m
