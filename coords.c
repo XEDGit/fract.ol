@@ -1,6 +1,7 @@
 #include "fractol.h"
 
-t_coords	*new_coords(double xmin, double xmax, double ymin, double ymax)
+t_coords	*new_coords(long double xmin, long double xmax, long double ymin, \
+long double ymax)
 {
 	t_coords	*res;
 
@@ -19,29 +20,29 @@ void	set_zoom(t_vars *vars, t_coords *coords)
 {
 	free(vars->zoom);
 	if (!coords)
-		error_quit(ERR_MSG);
+		win_close(vars, ERR_MSG);
 	vars->zoom = coords;
 }
 
 int	zoom(int key, int x, int y, t_vars *vars)
 {
-	double	xstep;
-	double	ystep;
+	long double	xstep;
+	long double	ystep;
 
 	if (key == 4)
 	{
-		xstep = fabs(vars->zoom->xmax - vars->zoom->xmin) / 10;
-		ystep = fabs(vars->zoom->ymax - vars->zoom->ymin) / 10;
+		xstep = fabsl(vars->zoom->xmax - vars->zoom->xmin) / 10;
+		ystep = fabsl(vars->zoom->ymax - vars->zoom->ymin) / 10;
 		shift_zoom(vars, x, y, 0);
 		set_zoom(vars, new_coords(vars->zoom->xmin + xstep, vars->zoom->\
 		xmax - xstep, vars->zoom->ymin + ystep, vars->zoom->ymax - ystep));
 	}
 	else if (key == 5)
 	{
-		xstep = fabs(vars->zoom->xmax - vars->zoom->xmin) / 5;
+		xstep = fabsl(vars->zoom->xmax - vars->zoom->xmin) / 5;
 		if (xstep * 5 > 10)
 			return (0);
-		ystep = fabs(vars->zoom->ymax - vars->zoom->ymin) / 5;
+		ystep = fabsl(vars->zoom->ymax - vars->zoom->ymin) / 5;
 		shift_zoom(vars, x, y, 1);
 		set_zoom(vars, new_coords(vars->zoom->xmin - xstep, vars->zoom->\
 		xmax + xstep, vars->zoom->ymin - ystep, vars->zoom->ymax + ystep));
@@ -51,15 +52,15 @@ int	zoom(int key, int x, int y, t_vars *vars)
 
 void	shift_zoom(t_vars *vars, int x, int y, int direction)
 {
-	double	xmov;
-	double	ymov;
-	double	xstep;
-	double	ystep;
+	long double	xmov;
+	long double	ymov;
+	long double	xstep;
+	long double	ystep;
 
-	xmov = -map(x, vars->sizex, -1, 1);
-	ymov = -map(y, vars->sizey, -1, 1);
-	xstep = fabs(vars->zoom->xmax - vars->zoom->xmin) / 10;
-	ystep = fabs(vars->zoom->ymax - vars->zoom->ymin) / 10;
+	xmov = -map(x, WIN_SIZE, -1, 1);
+	ymov = -map(y, WIN_SIZE, -1, 1);
+	xstep = fabsl(vars->zoom->xmax - vars->zoom->xmin) / 10;
+	ystep = fabsl(vars->zoom->ymax - vars->zoom->ymin) / 10;
 	xstep *= xmov;
 	ystep *= ymov;
 	if (direction)
@@ -72,7 +73,7 @@ void	shift_zoom(t_vars *vars, int x, int y, int direction)
 		vars->zoom->ymin + ystep, vars->zoom->ymax + ystep));
 }
 
-void	shift_view(int key, t_vars *vars, double xstep, double ystep)
+void	shift_view(int key, t_vars *vars, long double xstep, long double ystep)
 {
 	if (key == 125)
 		set_zoom(vars, new_coords(\
@@ -90,12 +91,12 @@ void	shift_view(int key, t_vars *vars, double xstep, double ystep)
 		set_zoom(vars, new_coords(\
 		vars->zoom->xmin + xstep, vars->zoom->xmax + xstep, \
 		vars->zoom->ymin, vars->zoom->ymax));
-	else if (key == 2)
-		vars->xconst += JSTEP;
-	else if (key == 0)
+	else if (key == 1)
 		vars->xconst -= JSTEP;
 	else if (key == 13)
-		vars->yconst += JSTEP;
-	else if (key == 1)
+		vars->xconst += JSTEP;
+	else if (key == 0)
 		vars->yconst -= JSTEP;
+	else if (key == 2)
+		vars->yconst += JSTEP;
 }

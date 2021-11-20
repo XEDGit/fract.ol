@@ -1,11 +1,11 @@
 #include "fractol.h"
 
-size_t	calc_mandel(double a, double b, double oa, double ob)
+size_t	calc_mandel(long double a, long double b, long double oa, \
+long double ob)
 {
-	int		n;
-	double	temp;
-	double	tempa;
-	double	tempb;
+	int			n;
+	long double	tempa;
+	long double	tempb;
 
 	n = 0;
 	tempa = 0;
@@ -14,18 +14,18 @@ size_t	calc_mandel(double a, double b, double oa, double ob)
 	{
 		tempa = a * a;
 		tempb = b * b;
-		temp = tempa - tempb + oa;
-		b = 2 * a * b + ob;
-		a = temp;
+		b = a * b;
+		b = b + b + ob;
+		a = tempa - tempb + oa;
 		n++;
 	}
 	return (n);
 }
 
-double	ft_atof(char *s)
+long double	ft_atof(char *s)
 {
-	double	res;
-	int		min;
+	long double	res;
+	int			min;
 
 	res = 0;
 	min = 0;
@@ -39,7 +39,7 @@ double	ft_atof(char *s)
 	return (res);
 }
 
-void	atof_cycle(char *s, double *res)
+void	atof_cycle(char *s, long double *res)
 {
 	int	c;
 
@@ -63,48 +63,24 @@ void	atof_cycle(char *s, double *res)
 		*res /= 10;
 }
 
-size_t	modulo_colors(int n)
+size_t	calc_burning_ship(long double a, long double b, long double oa, \
+long double ob)
 {
-	int	modulo;
+	int			n;
+	long double	tempa;
+	long double	tempb;
 
-	modulo = n % (MAX_ITER / (MAX_ITER / 10));
-	if (modulo == 1)
-		return (0x1a1a1a);
-	if (modulo == 2)
-		return (0x333333);
-	if (modulo == 3)
-		return (0x4d4d4d);
-	if (modulo == 4)
-		return (0x666666);
-	if (modulo == 5)
-		return (0x7f7f7f);
-	if (modulo == 6)
-		return (0x999999);
-	if (modulo == 7)
-		return (0xb3b3b3);
-	if (modulo == 8)
-		return (0xcccccc);
-	if (modulo == 9)
-		return (0xe5e5e5);
-	if (modulo == 10)
-		return (0xffffff);
-	return (0);
-}
-
-size_t	color_set(int n, int shift, int set)
-{
-	size_t		res;
-
-	if (set == 1)
-		return (modulo_colors(n));
-	if (!set)
-		return ((MAX_ITER - n) * 255 * (shift + 1));
-	if (n == MAX_ITER)
-		return (0x0);
-	if (shift + MAX_ITER < n)
-		shift = MAX_ITER;
-	else
-		shift += MAX_ITER;
-	res = map(n, shift, 0, 0xFFFFFF);
-	return (res);
+	n = 0;
+	tempa = 0;
+	tempb = 0;
+	while ((int)(tempa + tempb) < 4 && MAX_ITER > n)
+	{
+		tempa = a * a;
+		tempb = b * b;
+		b = fabsl(a * b);
+		b = b + b + ob;
+		a = tempa - tempb + oa;
+		n++;
+	}
+	return (n);
 }
