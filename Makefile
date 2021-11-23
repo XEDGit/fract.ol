@@ -13,7 +13,7 @@ GREEN := \033[32m
 DEFAULT := \033[39m
 
 all:
-	@gcc $(SRCS) $(FLAGS) -D P_SIZE=25
+	@gcc $(SRCS) $(FLAGS)
 	@gcc $(OUTS) $(FLAGS2) -o fractol
 clean:
 	@rm -f $(OUTS)
@@ -34,9 +34,8 @@ j:
 	@make
 	./fractol j $(1) $(2) $(ITERS)
 prod:
-	@echo "\n$(GREEN)Creating '$(DEFAULT)Executables$(GREEN)' folder...\n"
-	@rm -rf ./Executables
-	@mkdir Executables
+	@echo "\n$(GREEN)Cleaning '$(DEFAULT)Executables$(GREEN)' folder...\n"
+	@rm -f ./Executables/*
 	@echo "		NAME		WIN_SIZE	COL_SET\n"
 	@echo "Compiling$(DEFAULT)	fractol_big0	1920x1080	0"
 	@gcc $(SRCS) $(FLAGS) -D COL_SET=0

@@ -39,7 +39,8 @@ int	key(int key, t_vars *vars)
 	if (key == 53)
 		win_close(vars, 0);
 	else if (key == 15)
-		set_zoom(vars, new_coords(-2, 2, -2, 2));
+		set_zoom(vars, new_coords(-(WIN_SIZE_X / 100), (WIN_SIZE_X / 100), \
+							   -(WIN_SIZE_Y / 100), (WIN_SIZE_Y / 100)));
 	return (0);
 }
 
