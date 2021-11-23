@@ -8,19 +8,27 @@
 
 typedef struct s_coords
 {
-	long double	xmin;
-	long double	xmax;
-	long double	ymin;
-	long double	ymax;
+	double	xmin;
+	double	xmax;
+	double	ymin;
+	double	ymax;
 }	t_coords;
+
+typedef struct s_complex
+{
+	double	a;
+	double	az;
+	double	b;
+	double	bz;
+}	t_complex;
 
 typedef struct s_data
 {
 	void	*img;
 	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
+	int		bpp;
+	int		l_l;
+	int		e;
 }				t_data;
 
 typedef struct s_vars
@@ -28,49 +36,49 @@ typedef struct s_vars
 	void			*mlx;
 	void			*mlx_win;
 	int				type;
-	size_t			(*func)(long double, long double, long double, long double);
+	size_t			(*func)(t_complex *comp, int iter, unsigned long *p);
 	t_coords		*zoom;
-	t_data			*img;
+	t_data			*i;
 	t_data			*img_buff;
-	int				colshift;
-	long double		xconst;
-	long double		yconst;
+	unsigned long	*palette;
+	double			xconst;
+	double			yconst;
+	int				iters;
 }	t_vars;
 
 void			draw_set(t_vars *vars);
-size_t			color_set(int n, int shift, int set);
-size_t			modulo_colors(int n);
+size_t			modulo_colors(double z, int n, int iter, unsigned long *p);
 int				win_close(t_vars *vars, char *msg);
 int				key(int key, t_vars *vars);
 void			img_mlx_pixel_put(t_data *data, int x, int y, int color);
 void			set_zoom(t_vars *vars, t_coords *coords);
 int				zoom(int key, int x, int y, t_vars *vars);
 void			shift_zoom(t_vars *vars, int x, int y, int direction);
-long double		ft_atof(char *s);
-void			atof_cycle(char *s, long double *res);
-void			shift_view(int key, t_vars *vars, long double xstep, \
-long double ystep);
-long double		map(long double middle, long double win_size, \
-long double min, long double max);
-t_coords		*new_coords(long double xmin, long double xmax, \
-long double ymin, long double ymax);
-size_t			calc_mandel(long double a, long double b, long double oa, \
-long double ob);
-size_t			calc_burning_ship(long double a, long double b, long double \
-oa, long double ob);
+double			ft_atof(char *s);
+void			atof_cycle(char *s, double *res);
+void			shift_view(int key, t_vars *vars, double xstep, \
+double ystep);
+double			map(double middle, double win_size, \
+double min, double max);
+t_coords		*new_coords(double xmin, double xmax, \
+double ymin, double ymax);
+size_t			calc_mandel(t_complex *comp, int iter, unsigned long *p);
+size_t			calc_burning_ship(t_complex *comp, int iter, unsigned long *p);
+void			generate_palette(unsigned long *palette);
 
 # define HELP_MSG "Usage: ./fractol <lowcase initial\
- of set's name> <optional args>\n\n\
+ of set's name> <optional args> <max iterations>\n\n\
 Available Sets:\n\t\
-m:	Mandelbrot\n\t\
-b:	Burning ship\n\t\
-j:	Julia\t\t<float> <float>\n"
+m <max iterations>:\t\t\tMandelbrot\n\t\
+b <max iterations>:\t\t\tBurning ship\n\t\
+j <float> <float> <max iterations>:\tJulia\t\t\n"
 # define ERR_MSG "Program terminated.\nAn error occourred\n"
+# define P_SIZE 16
 # ifndef MAX_ITER
-#  define MAX_ITER 1080
+#  define MAX_ITER 600
 # endif
 # ifndef WIN_SIZE
-#  define WIN_SIZE 500
+#  define WIN_SIZE 1080
 # endif
 # ifndef COL_SET
 #  define COL_SET 0

@@ -1,7 +1,7 @@
 #include "fractol.h"
 
-t_coords	*new_coords(long double xmin, long double xmax, long double ymin, \
-long double ymax)
+t_coords	*new_coords(double xmin, double xmax, double ymin, \
+double ymax)
 {
 	t_coords	*res;
 
@@ -26,8 +26,8 @@ void	set_zoom(t_vars *vars, t_coords *coords)
 
 int	zoom(int key, int x, int y, t_vars *vars)
 {
-	long double	xstep;
-	long double	ystep;
+	double	xstep;
+	double	ystep;
 
 	if (key == 4)
 	{
@@ -52,10 +52,10 @@ int	zoom(int key, int x, int y, t_vars *vars)
 
 void	shift_zoom(t_vars *vars, int x, int y, int direction)
 {
-	long double	xmov;
-	long double	ymov;
-	long double	xstep;
-	long double	ystep;
+	double	xmov;
+	double	ymov;
+	double	xstep;
+	double	ystep;
 
 	xmov = -map(x, WIN_SIZE, -1, 1);
 	ymov = -map(y, WIN_SIZE, -1, 1);
@@ -73,7 +73,7 @@ void	shift_zoom(t_vars *vars, int x, int y, int direction)
 		vars->zoom->ymin + ystep, vars->zoom->ymax + ystep));
 }
 
-void	shift_view(int key, t_vars *vars, long double xstep, long double ystep)
+void	shift_view(int key, t_vars *vars, double xstep, double ystep)
 {
 	if (key == 125)
 		set_zoom(vars, new_coords(\

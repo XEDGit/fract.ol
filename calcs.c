@@ -1,31 +1,30 @@
 #include "fractol.h"
 
-size_t	calc_mandel(long double a, long double b, long double oa, \
-long double ob)
+size_t	calc_mandel(t_complex *comp, int iter, unsigned long *palette)
 {
-	int			n;
-	long double	tempa;
-	long double	tempb;
+	int		n;
+	double	tempa;
+	double	tempb;
 
 	n = 0;
-	tempa = 0;
-	tempb = 0;
-	while (tempa + tempb < 4 && MAX_ITER > n)
+	tempa = comp->a * comp->a;
+	tempb = comp->b * comp->b;
+	while (tempa + tempb < 100 && iter > n)
 	{
-		tempa = a * a;
-		tempb = b * b;
-		b = a * b;
-		b = b + b + ob;
-		a = tempa - tempb + oa;
+		tempa = comp->a * comp->a;
+		tempb = comp->b * comp->b;
+		comp->b = comp->a * comp->b;
+		comp->b = comp->b + comp->b + comp->bz;
+		comp->a = tempa - tempb + comp->az;
 		n++;
 	}
-	return (n);
+	return (modulo_colors(tempa + tempb, n, iter, palette));
 }
 
-long double	ft_atof(char *s)
+double	ft_atof(char *s)
 {
-	long double	res;
-	int			min;
+	double	res;
+	int		min;
 
 	res = 0;
 	min = 0;
@@ -39,7 +38,7 @@ long double	ft_atof(char *s)
 	return (res);
 }
 
-void	atof_cycle(char *s, long double *res)
+void	atof_cycle(char *s, double *res)
 {
 	int	c;
 
@@ -63,24 +62,23 @@ void	atof_cycle(char *s, long double *res)
 		*res /= 10;
 }
 
-size_t	calc_burning_ship(long double a, long double b, long double oa, \
-long double ob)
+size_t	calc_burning_ship(t_complex *comp, int iter, unsigned long *palette)
 {
-	int			n;
-	long double	tempa;
-	long double	tempb;
+	int		n;
+	double	tempa;
+	double	tempb;
 
 	n = 0;
-	tempa = 0;
-	tempb = 0;
-	while ((int)(tempa + tempb) < 4 && MAX_ITER > n)
+	tempa = comp->a * comp->a;
+	tempb = comp->b * comp->b;
+	while (tempa + tempb < 100 && iter > n)
 	{
-		tempa = a * a;
-		tempb = b * b;
-		b = fabsl(a * b);
-		b = b + b + ob;
-		a = tempa - tempb + oa;
+		tempa = comp->a * comp->a;
+		tempb = comp->b * comp->b;
+		comp->b = fabs(comp->a * comp->b);
+		comp->b = comp->b + comp->b + comp->bz;
+		comp->a = tempa - tempb + comp->az;
 		n++;
 	}
-	return (n);
+	return (modulo_colors(tempa + tempb, n, iter, palette));
 }
