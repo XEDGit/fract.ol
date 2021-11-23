@@ -1,4 +1,4 @@
-SRCS := main.c calcs.c utils.c coords.c colors.c
+SRCS := fractol.c calcs.c utils.c coords.c colors.c
 
 OUTS := $(SRCS:.c=.o)
 
