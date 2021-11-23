@@ -2,10 +2,16 @@
 
 int	win_close(t_vars *vars, char *msg)
 {
-	mlx_destroy_image(vars->mlx, vars->i->img);
-	mlx_destroy_image(vars->mlx, vars->img_buff->img);
-	mlx_destroy_window(vars->mlx, vars->mlx_win);
-	free(vars->zoom);
+	if (vars)
+	{
+		if (vars->i->img)
+			mlx_destroy_image(vars->mlx, vars->i->img);
+		if (vars->img_buff->img)
+			mlx_destroy_image(vars->mlx, vars->img_buff->img);
+		if (vars->mlx_win)
+			mlx_destroy_window(vars->mlx, vars->mlx_win);
+		free(vars->zoom);
+	}
 	if (msg == HELP_MSG || msg == ERR_MSG)
 		printf("%s", msg);
 	exit(0);

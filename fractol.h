@@ -72,13 +72,16 @@ Available Sets:\n\t\
 m <max iterations>:\t\t\tMandelbrot\n\t\
 b <max iterations>:\t\t\tBurning ship\n\t\
 j <float> <float> <max iterations>:\tJulia\t\t\n"
-# define ERR_MSG "Program terminated.\nAn error occourred\n"
-# define P_SIZE 16
-# ifndef MAX_ITER
-#  define MAX_ITER 600
+# define ERR_MSG "Program terminated. An error occourred\n"
+# ifdef P_SIZE
+#  undef P_SIZE
 # endif
-# ifndef WIN_SIZE
-#  define WIN_SIZE 1080
+# define P_SIZE 16
+# ifndef WIN_SIZE_X
+#  define WIN_SIZE_X 1920
+# endif
+# ifndef WIN_SIZE_Y
+#  define WIN_SIZE_Y 1080
 # endif
 # ifndef COL_SET
 #  define COL_SET 0

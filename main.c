@@ -7,13 +7,13 @@ void	draw_set(t_vars *vars)
 	t_complex		complex;
 
 	y = 0;
-	while (y < WIN_SIZE)
+	while (y < WIN_SIZE_Y)
 	{
 		x = 0;
-		while (x < WIN_SIZE)
+		while (x < WIN_SIZE_X)
 		{
-			complex.b = map(y, WIN_SIZE, vars->zoom->ymin, vars->zoom->ymax);
-			complex.a = map(x, WIN_SIZE, vars->zoom->xmin, vars->zoom->xmax);
+			complex.b = map(y, WIN_SIZE_Y, vars->zoom->ymin, vars->zoom->ymax);
+			complex.a = map(x, WIN_SIZE_X, vars->zoom->xmin, vars->zoom->xmax);
 			complex.az = complex.a;
 			complex.bz = complex.b;
 			if (vars->type)
@@ -32,7 +32,6 @@ void	draw_set(t_vars *vars)
 void	check_args(t_vars *v, char **argv, int argc)
 {
 	v->type = 0;
-	v->zoom = 0;
 	v->iters = 0;
 	v->i->addr = mlx_get_data_addr(v->i->img, &v->i->bpp, &v->i->l_l, &v->i->e);
 	v->img_buff->addr = mlx_get_data_addr(v->img_buff->img, \
@@ -55,7 +54,7 @@ void	check_args(t_vars *v, char **argv, int argc)
 	else if (argv[1][0] == 'b')
 		v->func = calc_burning_ship;
 	else
-		win_close(v, ERR_MSG);
+		win_close(v, HELP_MSG);
 }
 
 int	loop(t_vars *vars)
@@ -79,18 +78,20 @@ int	main(int argc, char **argv)
 	unsigned long	palette[P_SIZE];
 
 	vars.mlx = mlx_init();
-	vars.mlx_win = mlx_new_window(vars.mlx, WIN_SIZE, WIN_SIZE, "fract.ol");
+	vars.mlx_win = 0;
+	vars.zoom = 0;
 	vars.i = &img;
 	vars.img_buff = &img_b;
-	img.img = mlx_new_image(vars.mlx, WIN_SIZE, WIN_SIZE);
-	img_b.img = mlx_new_image(vars.mlx, WIN_SIZE, WIN_SIZE);
+	img.img = mlx_new_image(vars.mlx, WIN_SIZE_X, WIN_SIZE_Y);
+	img_b.img = mlx_new_image(vars.mlx, WIN_SIZE_X, WIN_SIZE_Y);
 	if (!img.img || !img_b.img)
 		win_close(&vars, ERR_MSG);
-	if (COL_SET)
-		generate_palette((unsigned long *)&palette);
-	vars.palette = (unsigned long *)&palette;
 	check_args(&vars, argv, argc);
-	set_zoom(&vars, new_coords(-2, 2, -2, 2));
+	vars.mlx_win = mlx_new_window(vars.mlx, WIN_SIZE_X, WIN_SIZE_Y, "fract.ol");
+	generate_palette((unsigned long *)&palette);
+	vars.palette = (unsigned long *)&palette;
+	set_zoom(&vars, new_coords(-(WIN_SIZE_X / 100), (WIN_SIZE_X / 100), \
+							   -(WIN_SIZE_Y / 100), (WIN_SIZE_Y / 100)));
 	mlx_mouse_hook(vars.mlx_win, zoom, &vars);
 	mlx_key_hook(vars.mlx_win, key, &vars);
 	mlx_hook(vars.mlx_win, 17, 0, win_close, &vars);

@@ -57,8 +57,8 @@ void	shift_zoom(t_vars *vars, int x, int y, int direction)
 	double	xstep;
 	double	ystep;
 
-	xmov = -map(x, WIN_SIZE, -1, 1);
-	ymov = -map(y, WIN_SIZE, -1, 1);
+	xmov = -map(x, WIN_SIZE_X, -1, 1);
+	ymov = -map(y, WIN_SIZE_Y, -1, 1);
 	xstep = fabsl(vars->zoom->xmax - vars->zoom->xmin) / 10;
 	ystep = fabsl(vars->zoom->ymax - vars->zoom->ymin) / 10;
 	xstep *= xmov;

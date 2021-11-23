@@ -2,17 +2,23 @@ SRCS := main.c calcs.c utils.c coords.c colors.c
 
 OUTS := $(SRCS:.c=.o)
 
-FLAGS := -Wall -Wextra -Werror
+FLAGS := -Wall -Wextra -Werror -Ofast -Imlx -c
 
-STEP := 0.001
+FLAGS2 := -lm -L. -lmlx -framework OpenGL -framework AppKit
+
+ITERS := 500
+
+GREEN := \033[32m
+
+DEFAULT := \033[39m
 
 all:
-	@gcc $(SRCS) $(FLAGS) -Imlx -c -Ofast
-	@gcc $(OUTS) -lm -L. -lmlx -framework OpenGL -framework AppKit -o fractol
+	@gcc $(SRCS) $(FLAGS) -D P_SIZE=25
+	@gcc $(OUTS) $(FLAGS2) -o fractol
 clean:
-	@rm $(OUTS)
+	@rm -f $(OUTS)
 fclean:
-	@rm $(OUTS) fractol
+	@rm -f $(OUTS) fractol
 re:
 	@make fclean
 	@make all
@@ -20,23 +26,31 @@ bonus:
 	@make all
 m:
 	@make all
-	./fractol m
+	./fractol m $(ITERS)
 b:
 	@make all
-	./fractol b
+	./fractol b $(ITERS)
 j:
 	@make
-	./fractol j $(1) $(2)
-fast:
-	@gcc $(SRCS) -Ofast -Imlx -c -D MAX_ITER=1000 -D WIN_SIZE=300
-	@gcc $(OUTS) -lm -L. -lmlx -framework OpenGL -framework AppKit -o fractol
+	./fractol j $(1) $(2) $(ITERS)
+prod:
+	@echo "\n$(GREEN)Creating '$(DEFAULT)Executables$(GREEN)' folder...\n"
+	@rm -rf ./Executables
+	@mkdir Executables
+	@echo "		NAME		WIN_SIZE	COL_SET\n"
+	@echo "Compiling$(DEFAULT)	fractol_big0	1920x1080	0"
+	@gcc $(SRCS) $(FLAGS) -D COL_SET=0
+	@gcc $(OUTS) $(FLAGS2) -o Executables/fractol_big0
+	@echo "$(GREEN)Compiling$(DEFAULT)	fractol_big1	1920x1080	1"
+	@gcc $(SRCS) $(FLAGS) -D COL_SET=1
+	@gcc $(OUTS) $(FLAGS2) -o Executables/fractol_big1
+	@echo "$(GREEN)Compiling$(DEFAULT)	fractol_small0	640x480		0"
+	@gcc $(SRCS) $(FLAGS) -D WIN_SIZE_X=640 -D WIN_SIZE_Y=480
+	@gcc $(OUTS) $(FLAGS2) -o Executables/fractol_small0
+	@echo "$(GREEN)Compiling$(DEFAULT)	fractol_small1	640x480		1\n"
+	@gcc $(SRCS) $(FLAGS) -D WIN_SIZE_X=640 -D WIN_SIZE_Y=480 -D COL_SET=1
+	@gcc $(OUTS) $(FLAGS2) -o Executables/fractol_small1
+	@echo "$(GREEN)Copying '$(DEFAULT)libmlx.dylib$(GREEN)'...\n"
+	@cp libmlx.dylib Executables
+	@echo "Done!$(DEFAULT)\n"
 	@make clean
-col:
-	@gcc $(SRCS) -Ofast -Imlx -c -D COL_SET=$(SET)
-	@gcc $(OUTS) -lm -L. -lmlx -framework OpenGL -framework AppKit -o fractol_colset$(SET)
-	@make clean
-change:
-	@gcc $(SRCS) -Ofast -Imlx -c -D MAX_ITER=500 -D WIN_SIZE=600 -D COL_SET=0 -D JSTEP=$(STEP)
-	@gcc $(OUTS) -lm -L. -lmlx -framework OpenGL -framework AppKit -o fractol
-	@make clean
-	./fractol j $(1) $(2)
