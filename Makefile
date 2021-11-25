@@ -37,7 +37,13 @@ prod:
 	@echo "\n$(GREEN)Cleaning '$(DEFAULT)Executables$(GREEN)' folder...\n"
 	@rm -f ./Executables/*
 	@echo "		NAME		WIN_SIZE	COL_SET\n"
-	@echo "Compiling$(DEFAULT)	fractol_big0	1920x1080	0"
+	@echo "$(GREEN)Compiling$(DEFAULT)	fractol_xtra0	2560x1440	0"
+	@gcc $(SRCS) $(FLAGS) -D COL_SET=0 -D WIN_SIZE_X=2560 -D WIN_SIZE_Y=1440
+	@gcc $(OUTS) $(FLAGS2) -o Executables/fractol_xtra0
+	@echo "$(GREEN)Compiling$(DEFAULT)	fractol_xtra1	2560x1440	1"
+	@gcc $(SRCS) $(FLAGS) -D COL_SET=1 -D WIN_SIZE_X=2560 -D WIN_SIZE_Y=1440
+	@gcc $(OUTS) $(FLAGS2) -o Executables/fractol_xtra1
+	@echo "$(GREEN)Compiling$(DEFAULT)	fractol_big0	1920x1080	0"
 	@gcc $(SRCS) $(FLAGS) -D COL_SET=0
 	@gcc $(OUTS) $(FLAGS2) -o Executables/fractol_big0
 	@echo "$(GREEN)Compiling$(DEFAULT)	fractol_big1	1920x1080	1"
