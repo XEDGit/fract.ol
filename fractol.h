@@ -65,6 +65,7 @@ double ymin, double ymax);
 size_t			calc_mandel(t_complex *comp, int iter, unsigned long *p);
 size_t			calc_burning_ship(t_complex *comp, int iter, unsigned long *p);
 void			generate_palette(unsigned long *palette);
+int				loop(t_vars *vars);
 
 # define HELP_MSG "Usage: ./fractol <lowcase initial\
  of set's name> <optional args> <max iterations>\n\n\

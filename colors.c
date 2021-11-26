@@ -27,10 +27,11 @@ size_t	modulo_colors(double z, int n, int iter, unsigned long *p)
 	temp = temp - (int)temp;
 	(void)p;
 	if (!COL_SET)
-		i = interpolate(map(n, iter, 0x888888, 0xffffff), \
-						map(n + 1, iter, 0x888888, 0xffffff), temp);
+		i = interpolate(map(n, iter, 0x888888, 0xdddddd) + p[P_SIZE], \
+						map(n + 1, iter, 0x888888, 0xdddddd) + p[P_SIZE], temp);
 	else
-		i = interpolate(p[n % P_SIZE], p[(n + 1) % P_SIZE], temp);
+		i = interpolate(p[n % P_SIZE] + p[P_SIZE], \
+						p[(n + 1) % P_SIZE] + p[P_SIZE], temp);
 	return (i);
 }
 
@@ -52,4 +53,5 @@ void	generate_palette(unsigned long *palette)
 	palette[13] = (204 << 16) + (128 << 8);
 	palette[14] = (153 << 16) + (87 << 8);
 	palette[15] = (106 << 16) + (52 << 8) + 3;
+	palette[P_SIZE] = 0;
 }

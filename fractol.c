@@ -75,7 +75,7 @@ int	main(int argc, char **argv)
 	t_vars			vars;
 	t_data			img;
 	t_data			img_b;
-	unsigned long	palette[P_SIZE];
+	unsigned long	palette[P_SIZE + 1];
 
 	vars.mlx = mlx_init();
 	vars.mlx_win = 0;
@@ -95,6 +95,6 @@ int	main(int argc, char **argv)
 	mlx_mouse_hook(vars.mlx_win, zoom, &vars);
 	mlx_key_hook(vars.mlx_win, key, &vars);
 	mlx_hook(vars.mlx_win, 17, 0, win_close, &vars);
-	mlx_loop_hook(vars.mlx, loop, &vars);
+	loop(&vars);
 	mlx_loop(vars.mlx);
 }
