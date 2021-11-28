@@ -95,6 +95,6 @@ int	main(int argc, char **argv)
 	mlx_mouse_hook(vars.mlx_win, zoom, &vars);
 	mlx_key_hook(vars.mlx_win, key, &vars);
 	mlx_hook(vars.mlx_win, 17, 0, win_close, &vars);
-	loop(&vars);
+	mlx_loop_hook(vars.mlx, loop, &vars);
 	mlx_loop(vars.mlx);
 }

@@ -49,7 +49,6 @@ int	key(int key, t_vars *vars)
 		vars->palette[P_SIZE] += 12;
 	else if (key == 35)
 		vars->palette[P_SIZE] = 0;
-	loop(vars);
 	return (0);
 }
 

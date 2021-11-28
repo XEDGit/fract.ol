@@ -47,7 +47,6 @@ int	zoom(int key, int x, int y, t_vars *vars)
 		set_zoom(vars, new_coords(vars->zoom->xmin - xstep, vars->zoom->\
 		xmax + xstep, vars->zoom->ymin - ystep, vars->zoom->ymax + ystep));
 	}
-	loop(vars);
 	return (0);
 }
 
