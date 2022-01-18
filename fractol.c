@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fractol.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/18 18:00:58 by lmuzio            #+#    #+#             */
+/*   Updated: 2022/01/18 19:04:25 by lmuzio           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fractol.h"
 
 void	draw_set(t_vars *vars)
@@ -91,7 +103,7 @@ int	main(int argc, char **argv)
 	generate_palette((unsigned long *)&palette);
 	vars.palette = (unsigned long *)&palette;
 	set_zoom(&vars, new_coords(-(WIN_SIZE_X / 100), (WIN_SIZE_X / 100), \
-							   -(WIN_SIZE_Y / 100), (WIN_SIZE_Y / 100)));
+	-(WIN_SIZE_Y / 100), (WIN_SIZE_Y / 100)));
 	mlx_mouse_hook(vars.mlx_win, zoom, &vars);
 	mlx_key_hook(vars.mlx_win, key, &vars);
 	mlx_hook(vars.mlx_win, 17, 0, win_close, &vars);

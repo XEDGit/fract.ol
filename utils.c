@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/18 18:01:01 by lmuzio            #+#    #+#             */
+/*   Updated: 2022/01/18 19:04:38 by lmuzio           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fractol.h"
 
 int	win_close(t_vars *vars, char *msg)
@@ -40,7 +52,7 @@ int	key(int key, t_vars *vars)
 		win_close(vars, 0);
 	else if (key == 15)
 		set_zoom(vars, new_coords(-(WIN_SIZE_X / 100), (WIN_SIZE_X / 100), \
-							   -(WIN_SIZE_Y / 100), (WIN_SIZE_Y / 100)));
+		-(WIN_SIZE_Y / 100), (WIN_SIZE_Y / 100)));
 	else if (key == 43 && !COL_SET && vars->palette[P_SIZE] - 13 >= 0)
 		vars->palette[P_SIZE] -= 13;
 	else if (key == 43 && COL_SET)

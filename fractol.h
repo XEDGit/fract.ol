@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fractol.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/18 18:01:05 by lmuzio            #+#    #+#             */
+/*   Updated: 2022/01/18 19:09:52 by lmuzio           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
@@ -36,7 +48,7 @@ typedef struct s_vars
 	void			*mlx;
 	void			*mlx_win;
 	int				type;
-	size_t			(*func)(t_complex *comp, int iter, unsigned long *p);
+	size_t			(*func)(t_complex * comp, int iter, unsigned long *p);
 	t_coords		*zoom;
 	t_data			*i;
 	t_data			*img_buff;
