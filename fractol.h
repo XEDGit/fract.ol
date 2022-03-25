@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:01:05 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/01/18 19:09:52 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/01/18 21:02:31 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,14 @@ typedef struct s_data
 	int		e;
 }				t_data;
 
+typedef size_t	(*t_func)(t_complex*, int, unsigned long*);
+
 typedef struct s_vars
 {
 	void			*mlx;
 	void			*mlx_win;
 	int				type;
-	size_t			(*func)(t_complex * comp, int iter, unsigned long *p);
+	t_func			func;
 	t_coords		*zoom;
 	t_data			*i;
 	t_data			*img_buff;
