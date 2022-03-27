@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:01:05 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/03/27 21:50:50 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/03/27 21:57:40 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,17 +76,18 @@ int				zoom(int key, int x, int y, t_vars *vars);
 void			shift_zoom(t_vars *vars, int x, int y, int direction);
 double			ft_atof(char *s);
 void			atof_cycle(char *s, double *res);
-void			shift_view(int key, t_vars *vars, double xstep, \
-double ystep);
-double			map(double middle, double win_size, \
-double min, double max);
-t_coords		*new_coords(double xmin, double xmax, \
-double ymin, double ymax);
 size_t			calc_mandel(t_complex *comp, int iter, t_vars *vars);
 size_t			calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
 void			generate_palette(unsigned long *palette);
 void			parse_settings(t_vars *v, char **argv, int argc);
 int				loop(t_vars *vars);
+void			shift_view(int key, t_vars *vars, double xstep, \
+							double ystep);
+double			map(double middle, double win_size, \
+					double min, double max);
+t_coords		*new_coords(double xmin, double xmax, \
+							double ymin, double ymax);
+
 # ifndef HELP_MSG
 #  define HELP_MSG "Usage: ./fractol <lowcase initial\
  of set's name> <optional args> <max iterations>\n\n\
@@ -95,9 +96,11 @@ m <max iterations>:\t\t\tMandelbrot\n\t\
 b <max iterations>:\t\t\tBurning ship\n\t\
 j <float> <float> <max iterations>:\tJulia\t\t\n"
 # endif
+
 # ifndef ERR_MSG
 #  define ERR_MSG "Program terminated. An error occourred\n"
 # endif
+
 # ifndef  ADD_ARG_MSG
 #  define ADD_ARG_MSG "An error occourred while parsing additional arguments.\n\
 Through additional arguments you can define different values:\n\n\
@@ -107,10 +110,12 @@ Julia's step:\tthis is gonna change the intensity\n\
 \t\tof the WASD controls when viewing Julia's set.\n\
 \t\tType a decimal (not integer) to set this value. Ex: 0.01\n"
 # endif
+
 # ifndef TOO_MANY_ARGS
-#  define TOO_MANY_ARGS "You typed too many optional arguments,\
- use maximum 3 more than required\n"
+#  define TOO_MANY_ARGS "You typed too many optional arguments, \
+use maximum 3 more than required\n"
 # endif
+
 # ifndef P_SIZE
 #  define P_SIZE 16
 # endif
