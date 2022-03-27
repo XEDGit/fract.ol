@@ -6,11 +6,23 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:01:01 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/03/25 20:33:58 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/03/27 21:50:17 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+
+void	print(const char *s)
+{
+	int		buffer_length;
+
+	buffer_length = 0;
+	if (!s)
+		return ;
+	while (s[buffer_length])
+		buffer_length++;
+	write(1, s, buffer_length);
+}
 
 int	win_close(t_vars *vars, char *msg)
 {
@@ -24,8 +36,9 @@ int	win_close(t_vars *vars, char *msg)
 			mlx_destroy_window(vars->mlx, vars->mlx_win);
 		free(vars->zoom);
 	}
-	if (msg == HELP_MSG || msg == ERR_MSG)
-		printf("%s", msg);
+	if (msg == HELP_MSG || msg == ERR_MSG \
+	|| msg == ADD_ARG_MSG || msg == TOO_MANY_ARGS)
+		print(msg);
 	exit(0);
 }
 
@@ -51,11 +64,11 @@ int	key(int key, t_vars *vars)
 	if (key == 53)
 		win_close(vars, 0);
 	else if (key == 15)
-		set_zoom(vars, new_coords(-(WIN_SIZE_X / 100), (WIN_SIZE_X / 100), \
-		-(WIN_SIZE_Y / 100), (WIN_SIZE_Y / 100)));
-	else if (key == 43 && !COL_SET && vars->palette[P_SIZE] > 12)
+		set_zoom(vars, new_coords(-(vars->x_res / 100), (vars->x_res / 100), \
+		-(vars->y_res / 100), (vars->y_res / 100)));
+	else if (key == 43 && !vars->color_set && vars->palette[P_SIZE] > 12)
 		vars->palette[P_SIZE] -= 12;
-	else if (key == 43 && COL_SET)
+	else if (key == 43 && vars->color_set)
 		vars->palette[P_SIZE] -= 12;
 	else if (key == 47)
 		vars->palette[P_SIZE] += 13;

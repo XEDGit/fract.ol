@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:00:54 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/01/18 18:00:54 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/03/26 21:36:04 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ void	shift_zoom(t_vars *vars, int x, int y, int direction)
 	double	xstep;
 	double	ystep;
 
-	xmov = -map(x, WIN_SIZE_X, -1, 1);
-	ymov = -map(y, WIN_SIZE_Y, -1, 1);
+	xmov = -map(x, vars->x_res, -1, 1);
+	ymov = -map(y, vars->y_res, -1, 1);
 	xstep = fabsl(vars->zoom->xmax - vars->zoom->xmin) / 10;
 	ystep = fabsl(vars->zoom->ymax - vars->zoom->ymin) / 10;
 	xstep *= xmov;
@@ -104,11 +104,11 @@ void	shift_view(int key, t_vars *vars, double xstep, double ystep)
 		vars->zoom->xmin + xstep, vars->zoom->xmax + xstep, \
 		vars->zoom->ymin, vars->zoom->ymax));
 	else if (key == 1)
-		vars->xconst -= JSTEP;
+		vars->xconst -= vars->j_step;
 	else if (key == 13)
-		vars->xconst += JSTEP;
+		vars->xconst += vars->j_step;
 	else if (key == 0)
-		vars->yconst -= JSTEP;
+		vars->yconst -= vars->j_step;
 	else if (key == 2)
-		vars->yconst += JSTEP;
+		vars->yconst += vars->j_step;
 }

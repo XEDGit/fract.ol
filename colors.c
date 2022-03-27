@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:00:50 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/01/18 18:00:50 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/03/27 20:14:02 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ size_t	interpolate(size_t col1, size_t col2, float temp)
 	return ((r << 16) + (g << 8) + b);
 }
 
-size_t	modulo_colors(double z, int n, int iter, unsigned long *p)
+size_t	modulo_colors(double z, int n, int iter, t_vars *vars)
 {
 	float			temp;
 	unsigned long	i;
@@ -37,13 +37,13 @@ size_t	modulo_colors(double z, int n, int iter, unsigned long *p)
 	temp = n + 2 - log(log(z)) / .693147;
 	n = (int)temp;
 	temp = temp - (int)temp;
-	(void)p;
-	if (!COL_SET)
-		i = interpolate(map(n, iter, 0x888888, 0xdddddd) + p[P_SIZE], \
-						map(n + 1, iter, 0x888888, 0xdddddd) + p[P_SIZE], temp);
+	if (!vars->color_set)
+		i = interpolate(map(n, iter, 0x888888, 0xdddddd) + \
+		vars->palette[P_SIZE], map(n + 1, iter, 0x888888, 0xdddddd) \
+		+ vars->palette[P_SIZE], temp);
 	else
-		i = interpolate(p[n % P_SIZE] + p[P_SIZE], \
-						p[(n + 1) % P_SIZE] + p[P_SIZE], temp);
+		i = interpolate(vars->palette[n % P_SIZE] + vars->palette[P_SIZE], \
+			vars->palette[(n + 1) % P_SIZE] + vars->palette[P_SIZE], temp);
 	return (i);
 }
 

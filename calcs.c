@@ -6,32 +6,11 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:00:42 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/03/25 20:26:07 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/03/26 21:41:50 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
-
-size_t	calc_mandel(t_complex *comp, int iter, unsigned long *palette)
-{
-	int		n;
-	double	tempa;
-	double	tempb;
-
-	n = 0;
-	tempa = comp->a * comp->a;
-	tempb = comp->b * comp->b;
-	while (tempa + tempb < 100 && iter > n)
-	{
-		tempa = comp->a * comp->a;
-		tempb = comp->b * comp->b;
-		comp->b = comp->a * comp->b;
-		comp->b = comp->b + comp->b + comp->bz;
-		comp->a = tempa - tempb + comp->az;
-		n++;
-	}
-	return (modulo_colors(tempa + tempb, n, iter, palette));
-}
 
 double	ft_atof(char *s)
 {
@@ -74,7 +53,28 @@ void	atof_cycle(char *s, double *res)
 		*res /= 10;
 }
 
-size_t	calc_burning_ship(t_complex *comp, int iter, unsigned long *palette)
+size_t	calc_mandel(t_complex *comp, int iter, t_vars *vars)
+{
+	int		n;
+	double	tempa;
+	double	tempb;
+
+	n = 0;
+	tempa = comp->a * comp->a;
+	tempb = comp->b * comp->b;
+	while (tempa + tempb < 100 && iter > n)
+	{
+		tempa = comp->a * comp->a;
+		tempb = comp->b * comp->b;
+		comp->b = comp->a * comp->b;
+		comp->b = comp->b + comp->b + comp->bz;
+		comp->a = tempa - tempb + comp->az;
+		n++;
+	}
+	return (modulo_colors(tempa + tempb, n, iter, vars));
+}
+
+size_t	calc_burning_ship(t_complex *comp, int iter, t_vars *vars)
 {
 	int		n;
 	double	tempa;
@@ -92,5 +92,5 @@ size_t	calc_burning_ship(t_complex *comp, int iter, unsigned long *palette)
 		comp->a = tempa - tempb + comp->az;
 		n++;
 	}
-	return (modulo_colors(tempa + tempb, n, iter, palette));
+	return (modulo_colors(tempa + tempb, n, iter, vars));
 }

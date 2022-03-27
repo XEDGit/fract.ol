@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:00:58 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/01/18 19:04:25 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/03/27 21:40:12 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ void	draw_set(t_vars *vars)
 	t_complex		complex;
 
 	y = 0;
-	while (y < WIN_SIZE_Y)
+	while (y < vars->y_res)
 	{
 		x = 0;
-		while (x < WIN_SIZE_X)
+		while (x < vars->x_res)
 		{
-			complex.b = map(y, WIN_SIZE_Y, vars->zoom->ymin, vars->zoom->ymax);
-			complex.a = map(x, WIN_SIZE_X, vars->zoom->xmin, vars->zoom->xmax);
+			complex.b = map(y, vars->y_res, vars->zoom->ymin, vars->zoom->ymax);
+			complex.a = map(x, vars->x_res, vars->zoom->xmin, vars->zoom->xmax);
 			complex.az = complex.a;
 			complex.bz = complex.b;
 			if (vars->type)
@@ -34,7 +34,7 @@ void	draw_set(t_vars *vars)
 				complex.bz = vars->yconst;
 			}
 			img_mlx_pixel_put(vars->i, x, y, vars->func(&complex, \
-			vars->iters, vars->palette));
+			vars->iters, vars));
 			x++;
 		}
 		y++;
@@ -44,10 +44,6 @@ void	draw_set(t_vars *vars)
 void	check_args(t_vars *v, char **argv, int argc)
 {
 	v->type = 0;
-	v->iters = 0;
-	v->i->addr = mlx_get_data_addr(v->i->img, &v->i->bpp, &v->i->l_l, &v->i->e);
-	v->img_buff->addr = mlx_get_data_addr(v->img_buff->img, \
-	&v->img_buff->bpp, &v->img_buff->l_l, &v->img_buff->e);
 	if (argc < 3)
 		win_close(v, HELP_MSG);
 	v->iters = ft_atof(argv[2]);
@@ -66,7 +62,8 @@ void	check_args(t_vars *v, char **argv, int argc)
 	else if (argv[1][0] == 'b')
 		v->func = calc_burning_ship;
 	else
-		win_close(v, HELP_MSG);
+		win_close(0, HELP_MSG);
+	parse_settings(v, argv, argc);
 }
 
 int	loop(t_vars *vars)
@@ -82,6 +79,24 @@ int	loop(t_vars *vars)
 	return (0);
 }
 
+void	initialize_vars(t_vars *vars, t_data *i, t_data *ib, unsigned long *p)
+{
+	vars->mlx = mlx_init();
+	vars->mlx_win = 0;
+	vars->zoom = 0;
+	vars->i = i;
+	vars->img_buff = ib;
+	vars->palette = p;
+	vars->i->img = mlx_new_image(vars->mlx, vars->x_res, vars->y_res);
+	vars->img_buff->img = mlx_new_image(vars->mlx, vars->x_res, vars->y_res);
+	if (!vars->i->img || !vars->img_buff->img)
+		win_close(vars, ERR_MSG);
+	vars->i->addr = mlx_get_data_addr(vars->i->img, \
+	&vars->i->bpp, &vars->i->l_l, &vars->i->e);
+	vars->img_buff->addr = mlx_get_data_addr(vars->img_buff->img, \
+	&vars->img_buff->bpp, &vars->img_buff->l_l, &vars->img_buff->e);
+}
+
 int	main(int argc, char **argv)
 {
 	t_vars			vars;
@@ -89,21 +104,13 @@ int	main(int argc, char **argv)
 	t_data			img_b;
 	unsigned long	palette[P_SIZE + 1];
 
-	vars.mlx = mlx_init();
-	vars.mlx_win = 0;
-	vars.zoom = 0;
-	vars.i = &img;
-	vars.img_buff = &img_b;
-	img.img = mlx_new_image(vars.mlx, WIN_SIZE_X, WIN_SIZE_Y);
-	img_b.img = mlx_new_image(vars.mlx, WIN_SIZE_X, WIN_SIZE_Y);
-	if (!img.img || !img_b.img)
-		win_close(&vars, ERR_MSG);
 	check_args(&vars, argv, argc);
-	vars.mlx_win = mlx_new_window(vars.mlx, WIN_SIZE_X, WIN_SIZE_Y, "fract.ol");
-	generate_palette((unsigned long *)&palette);
-	vars.palette = (unsigned long *)&palette;
-	set_zoom(&vars, new_coords(-(WIN_SIZE_X / 100), (WIN_SIZE_X / 100), \
-	-(WIN_SIZE_Y / 100), (WIN_SIZE_Y / 100)));
+	initialize_vars(&vars, &img, &img_b, palette);
+	if (vars.color_set)
+		generate_palette(palette);
+	vars.mlx_win = mlx_new_window(vars.mlx, vars.x_res, vars.y_res, "fract.ol");
+	set_zoom(&vars, new_coords(-(vars.x_res / 100), (vars.x_res / 100), \
+	-(vars.y_res / 100), (vars.y_res / 100)));
 	mlx_mouse_hook(vars.mlx_win, zoom, &vars);
 	mlx_key_hook(vars.mlx_win, key, &vars);
 	mlx_hook(vars.mlx_win, 17, 0, win_close, &vars);
