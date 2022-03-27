@@ -22,8 +22,9 @@ it shows different types of fractals and implies some techniques like the smooth
 ## Use
 ### Run
       ./fractol <selected fractal> <julia values(optional, only for julia set)> <number of iterations> <additional settings(optional)>
-      
-#### <selected fractal>
+
+#### selected fractal
+
 You can choose between three different equations:
 
 * Mandelbrot
@@ -32,18 +33,19 @@ You can choose between three different equations:
 
 To run the corresponding fractal use the initial letter of the equation
 
-#### <number of iterations>
+#### number of iterations
+
 Play with this value to be able to zoom deeper, the higher is the value the slower is the program, but you can zoom 
 really deep, a  really high value could be 2000
 
-#### <additional settings(optional)>
+#### additional settings(optional)
 You can specify three types of additional settings without a specific order:
 
 * Window size:    type "X_SIZExY_SIZE", default is 1000x1000
 * Color palette:  specify 0 for a procedurally generated palette, 1 for a fixed one, default is 0
 * Julia's step:   defines the intensity of the WASD controls for Julia's set, default is 0.1
 
-#### <julia values(optional, only for julia set)>
+#### julia values(optional, only for julia set)
 For rendering the Julia's set you have to specify the values to be used in the equation, specify decimal (not integer) values
 
 ### Examples
