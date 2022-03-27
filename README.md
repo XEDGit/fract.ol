@@ -50,15 +50,15 @@ For rendering the Julia's set you have to specify the values to be used in the e
 
 ### Examples
 * To run the Mandelbrot set with 500 iterations you have to write:
-    ./fractol m 500
+      ./fractol m 500
 * To run the Julia set:
-    ./fractol j 0.1 -0.4 250
+      ./fractol j 0.1 -0.4 250
 * To run the Burning ship set:
-    ./fractol b 1000
+      ./fractol b 1000
 * To run the Mandelbrot set with additional arguments:
-    ./fractol m 500 1920x1080 1
+      ./fractol m 500 1920x1080 1
 * To run the Mandelbrot set with a WASD step of 0.01:
-    ./fractol m 500 0.01 1 1920x1080
+      ./fractol m 500 0.01 1 1920x1080
 
 ## Extra features
 
