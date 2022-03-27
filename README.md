@@ -46,7 +46,7 @@ You can specify three types of additional settings without a specific order:
 * Julia's step:   defines the intensity of the WASD controls for Julia's set, default is 0.1
 
 #### julia values(optional, only for julia set)
-For rendering the Julia's set you have to specify the values to be used in the equation, specify decimal (not integer) values
+For rendering the Julia's set you have to specify the values to be used in the equation, specify two decimal (not integer) values
 
 ### Examples
 * To run the Mandelbrot set with 500 iterations you have to write:
@@ -57,7 +57,7 @@ For rendering the Julia's set you have to specify the values to be used in the e
     ./fractol b 1000
 * To run the Mandelbrot set with additional arguments:
     ./fractol m 500 1920x1080 1
-* To run the Mandelbrot set with additional arguments and a WASD step of 0.01:
+* To run the Mandelbrot set with a WASD step of 0.01:
     ./fractol m 500 0.01 1 1920x1080
 
 ## Extra features
