@@ -1,8 +1,8 @@
-SRCS := fractol.c calcs.c utils.c coords.c colors.c arguments.c
+SRCS :=  ./src/fractol.c ./src/calcs.c ./src/utils.c ./src/coords.c ./src/colors.c ./src/arguments.c
 
-OUTS := $(SRCS:.c=.o)
+OUTS := ./fractol.o ./calcs.o ./utils.o ./coords.o ./colors.o ./arguments.o
 
-FLAGS := -Wall -Wextra -Werror -Ofast -mtune=native -march=native -Imlx -c
+FLAGS := -Wall -Wextra -Werror -Ofast -mtune=native -march=native -Imlx -Iincludes -c
 
 FLAGS2 := -lm -L. -lmlx -framework OpenGL -framework AppKit
 
@@ -16,15 +16,17 @@ NAME := fractol
 
 $(NAME): $(OUTS)
 	gcc $(OUTS) $(FLAGS2) -o fractol
-$(OUTS): $(SRCS)
+$(OUTS): $(SRCS) libmlx.dylib
 	gcc $(SRCS) $(FLAGS)
-all:
+libmlx.dylib:
+	make -C ./mlx
+	mv ./mlx/libmlx.dylib .
+all: libmlx.dylib
 	gcc $(SRCS) $(FLAGS)
 	gcc $(OUTS) $(FLAGS2) -o fractol
 clean:
 	rm -f $(OUTS)
 fclean:
-	rm -f $(OUTS) fractol
-re:
-	@make fclean
+	rm -f $(OUTS) fractol libmlx.dylib
+re: fclean libmlx.dylib
 	@make
