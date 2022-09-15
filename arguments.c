@@ -6,11 +6,19 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:34:18 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/03/27 21:50:02 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/05/20 16:57:32 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+
+int	ft_isnum(char *str)
+{
+	while (*str)
+		if (*str < '0' || *str++ > '9')
+			return (1);
+	return (0);
+}
 
 int	ft_atoi(char *str)
 {

@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:01:05 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/03/27 21:57:40 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/05/20 16:57:47 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void			img_mlx_pixel_put(t_data *data, int x, int y, int color);
 void			set_zoom(t_vars *vars, t_coords *coords);
 int				zoom(int key, int x, int y, t_vars *vars);
 void			shift_zoom(t_vars *vars, int x, int y, int direction);
+int				ft_isnum(char *str);
 double			ft_atof(char *s);
 void			atof_cycle(char *s, double *res);
 size_t			calc_mandel(t_complex *comp, int iter, t_vars *vars);
@@ -90,7 +91,7 @@ t_coords		*new_coords(double xmin, double xmax, \
 
 # ifndef HELP_MSG
 #  define HELP_MSG "Usage: ./fractol <lowcase initial\
- of set's name> <optional args> <max iterations>\n\n\
+ of set's name> <optional args> <max iterations> <additional args>\n\n\
 Available Sets:\n\t\
 m <max iterations>:\t\t\tMandelbrot\n\t\
 b <max iterations>:\t\t\tBurning ship\n\t\

@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:00:58 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/05/08 15:51:42 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/05/20 16:55:26 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	draw_set(t_vars *vars)
 void	check_args(t_vars *v, char **argv, int argc)
 {
 	v->type = 0;
-	if (argc < 3)
+	if (argc < 3 || ft_isnum(argv[2]))
 		win_close(0, HELP_MSG);
 	v->iters = ft_atof(argv[2]);
 	if (argv[1][0] == 'm' && !argv[1][1])
