@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 19:34:18 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/05/20 16:57:32 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/09/15 21:11:46 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	check_additional_settings(t_vars *v, char *s)
 		{
 			v->x_res = ft_atoi(s);
 			v->y_res = ft_atoi(&s[counter + 1]);
-			if (!v->x_res || !v->y_res)
+			if (v->x_res <= 0 || v->y_res <= 0)
 				win_close(0, ERR_MSG);
 			return ;
 		}
@@ -68,7 +68,7 @@ void	check_additional_settings(t_vars *v, char *s)
 		}
 		counter++;
 	}
-	if (counter <= 1 && (*s == '0' || *s == '1'))
+	if (counter == 1 && (*s == '0' || *s == '1'))
 		v->color_set = ft_atoi(s);
 	else
 		win_close(0, ADD_ARG_MSG);
@@ -91,5 +91,9 @@ void	parse_settings(t_vars *v, char **argv, int argc)
 	if (argc - arg_start > 3)
 		win_close(0, TOO_MANY_ARGS);
 	while (--argc >= arg_start)
+	{
 		check_additional_settings(v, argv[argc]);
+		if (argv[1][0] != 'j' && v->j_step != 0.1)
+			win_close(0, TOO_MANY_ARGS);
+	}
 }

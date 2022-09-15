@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:01:05 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/05/20 16:57:47 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/09/15 21:12:49 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,36 +89,22 @@ double			map(double middle, double win_size, \
 t_coords		*new_coords(double xmin, double xmax, \
 							double ymin, double ymax);
 
-# ifndef HELP_MSG
-#  define HELP_MSG "Usage: ./fractol <lowcase initial\
+# define HELP_MSG "Usage: ./fractol <lowcase initial\
  of set's name> <optional args> <max iterations> <additional args>\n\n\
 Available Sets:\n\t\
 m <max iterations>:\t\t\tMandelbrot\n\t\
 b <max iterations>:\t\t\tBurning ship\n\t\
 j <float> <float> <max iterations>:\tJulia\t\t\n"
-# endif
-
-# ifndef ERR_MSG
-#  define ERR_MSG "Program terminated. An error occourred\n"
-# endif
-
-# ifndef  ADD_ARG_MSG
-#  define ADD_ARG_MSG "An error occourred while parsing additional arguments.\n\
+# define ERR_MSG "Program terminated. An error occourred\n"
+# define ADD_ARG_MSG "An error occourred while parsing additional arguments.\n\
 Through additional arguments you can define different values:\n\n\
 Color palette:\t0: procedurally generated palette\n\t\t1: fixed palette\n\n\
 Window size:\ttype <x size>x<y size>. Ex: 1920x1080\n\n\
 Julia's step:\tthis is gonna change the intensity\n\
 \t\tof the WASD controls when viewing Julia's set.\n\
 \t\tType a decimal (not integer) to set this value. Ex: 0.01\n"
-# endif
-
-# ifndef TOO_MANY_ARGS
-#  define TOO_MANY_ARGS "You typed too many optional arguments, \
-use maximum 3 more than required\n"
-# endif
-
-# ifndef P_SIZE
-#  define P_SIZE 16
-# endif
+# define TOO_MANY_ARGS "You typed too many additional arguments, \
+use maximum 3 more than required for Julia, 2 more for others\n"
+# define P_SIZE 16
 
 #endif

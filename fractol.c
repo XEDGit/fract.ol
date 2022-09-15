@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/18 18:00:58 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/05/20 16:55:26 by lmuzio           ###   ########.fr       */
+/*   Updated: 2022/09/15 20:46:47 by lmuzio           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ void	check_args(t_vars *v, char **argv, int argc)
 		v->func = calc_burning_ship;
 	else
 		win_close(0, HELP_MSG);
+	if (v->iters <= 0)
+		win_close(0, ERR_MSG);
 	parse_settings(v, argv, argc);
 }
 
