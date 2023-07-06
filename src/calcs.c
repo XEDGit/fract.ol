@@ -12,9 +12,9 @@
 
 #include "fractol.h"
 
-double	ft_atof(char *s)
+long double	ft_atof(char *s)
 {
-	double	res;
+	long double	res;
 	int		min;
 
 	res = 0;
@@ -29,7 +29,7 @@ double	ft_atof(char *s)
 	return (res);
 }
 
-void	atof_cycle(char *s, double *res)
+void	atof_cycle(char *s, long double *res)
 {
 	int	c;
 
@@ -56,8 +56,8 @@ void	atof_cycle(char *s, double *res)
 size_t	calc_mandel(t_complex *comp, int iter, t_vars *vars)
 {
 	int		n;
-	double	tempa;
-	double	tempb;
+	long double	tempa;
+	long double	tempb;
 
 	n = 0;
 	tempa = comp->a * comp->a;
@@ -77,8 +77,8 @@ size_t	calc_mandel(t_complex *comp, int iter, t_vars *vars)
 size_t	calc_burning_ship(t_complex *comp, int iter, t_vars *vars)
 {
 	int		n;
-	double	tempa;
-	double	tempb;
+	long double	tempa;
+	long double	tempb;
 
 	n = 0;
 	tempa = comp->a * comp->a;
@@ -87,7 +87,7 @@ size_t	calc_burning_ship(t_complex *comp, int iter, t_vars *vars)
 	{
 		tempa = comp->a * comp->a;
 		tempb = comp->b * comp->b;
-		comp->b = fabs(comp->a * comp->b);
+		comp->b = fabsl(comp->a * comp->b);
 		comp->b = comp->b + comp->b + comp->bz;
 		comp->a = tempa - tempb + comp->az;
 		n++;

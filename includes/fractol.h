@@ -18,74 +18,6 @@
 # include <unistd.h>
 # include <math.h>
 
-typedef struct s_coords
-{
-	double	xmin;
-	double	xmax;
-	double	ymin;
-	double	ymax;
-}	t_coords;
-
-typedef struct s_complex
-{
-	double	a;
-	double	az;
-	double	b;
-	double	bz;
-}	t_complex;
-
-typedef struct s_data
-{
-	mlx_image_t	*img;
-	char		*addr;
-	int			bpp;
-	int			l_l;
-	int			e;
-}				t_data;
-
-typedef struct s_vars	t_vars;
-
-typedef size_t			(*t_func)(t_complex*, int, t_vars *);
-
-typedef struct s_vars
-{
-	mlx_t			*mlx;
-	int				type;
-	t_func			func;
-	t_coords		*zoom;
-	mlx_image_t		*i;
-	unsigned long	*palette;
-	double			xconst;
-	double			yconst;
-	int				iters;
-	int				x_res;
-	int				y_res;
-	double			j_step;
-	int				color_set;
-}	t_vars;
-
-void			draw_set(t_vars *vars);
-size_t			modulo_colors(double z, int n, int iter, t_vars *vars);
-int				win_close(t_vars *vars, char *msg);
-void			key(mlx_key_data_t keydata, void *vvars);
-void			set_zoom(t_vars *vars, t_coords *coords);
-void			zoom(double xstep, double ystep, void *vvars);
-void			shift_zoom(t_vars *vars, int x, int y, int direction);
-int				ft_isnum(char *str);
-double			ft_atof(char *s);
-void			atof_cycle(char *s, double *res);
-size_t			calc_mandel(t_complex *comp, int iter, t_vars *vars);
-size_t			calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
-void			generate_palette(unsigned long *palette);
-void			parse_settings(t_vars *v, char **argv, int argc);
-int				loop(t_vars *vars);
-void			shift_view(int key, t_vars *vars, double xstep, \
-							double ystep);
-double			map(double middle, double win_size, \
-					double min, double max);
-t_coords		*new_coords(double xmin, double xmax, \
-							double ymin, double ymax);
-
 # define HELP_MSG "Usage: ./fractol <lowcase initial\
  of set's name> <optional args> <max iterations> <additional args>\n\n\
 Available Sets:\n\t\
@@ -103,5 +35,61 @@ Julia's step:\tthis is gonna change the intensity\n\
 # define TOO_MANY_ARGS "You typed too many additional arguments, \
 use maximum 3 more than required for Julia, 2 more for others\n"
 # define P_SIZE 16
+
+typedef struct s_coords
+{
+	long double	xmin;
+	long double	xmax;
+	long double	ymin;
+	long double	ymax;
+}	t_coords;
+
+typedef struct s_complex
+{
+	long double	a;
+	long double	az;
+	long double	b;
+	long double	bz;
+}	t_complex;
+
+typedef struct s_vars	t_vars;
+
+typedef size_t			(*t_func)(t_complex*, int, t_vars *);
+
+typedef struct s_vars
+{
+	mlx_t			*mlx;
+	int				type;
+	t_func			func;
+	t_coords		zoom;
+	mlx_image_t		*i;
+	unsigned long	palette[P_SIZE];
+	long double		xconst;
+	long double		yconst;
+	int				iters;
+	int				x_res;
+	int				y_res;
+	long double		j_step;
+	int				color_set;
+}	t_vars;
+
+long double			ft_atof(char *s);
+void				atof_cycle(char *s, long double *res);
+void				draw_set(t_vars *vars);
+size_t				modulo_colors(long double z, int n, int iter, t_vars *vars);
+int					win_close(t_vars *vars, char *msg);
+void				key(mlx_key_data_t keydata, void *vvars);
+void				zoom(double xstep, double ystep, void *vvars);
+void				shift_zoom(t_vars *vars, int x, int y, int direction);
+int					ft_isnum(char *str);
+size_t				calc_mandel(t_complex *comp, int iter, t_vars *vars);
+size_t				calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
+void				generate_palette(unsigned long *palette);
+void				parse_settings(t_vars *v, char **argv, int argc);
+void				loop(t_vars *vars);
+void				shift_view(int key, t_vars *vars, long double xstep, \
+							long double ystep);
+long double	map(long double middle, long double win_size, \
+					long double min, long double max);
 
 #endif

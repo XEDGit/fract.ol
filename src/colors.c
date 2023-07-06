@@ -27,7 +27,7 @@ size_t	interpolate(size_t col1, size_t col2, float temp)
 	return ((r << 24) + (g << 16) + (b << 8) + 0xff);
 }
 
-size_t	modulo_colors(double z, int n, int iter, t_vars *vars)
+size_t	modulo_colors(long double z, int n, int iter, t_vars *vars)
 {
 	float			temp;
 	unsigned long	i;

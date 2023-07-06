@@ -10,9 +10,11 @@ OBJ := $(addprefix $(OBJ_DIR)/, $(FILES:.c=.o))
 
 LIB := build/libmlx42.a
 
-CFLAGS := -g -Wall -Wextra -Werror -IMLX42/include -Iincludes -c -flto -O3
+INC := -Iincludes -IMLX42/include
 
-LFLAGS := -g -L "/Users/$(USER)/.brew/lib" -lglfw -framework Cocoa -framework OpenGL -Iincludes -IMLX42/include -framework IOKit# -flto -O3
+CFLAGS := -g -Wall -Wextra -Werror $(INC) -c -flto -O3
+
+LFLAGS := -g -L "/Users/$(USER)/.brew/lib" -lglfw -framework Cocoa -framework OpenGL $(INC) -framework IOKit -flto -O3
 
 GREEN := \033[32m
 
@@ -34,11 +36,19 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 $(LIB):
 	cmake -S MLX42 -B build
 	cmake --build build -j4
+
 clean:
 	rm -rf $(OBJ_DIR)
 fclean:
 	rm -rf $(OBJ_DIR) $(NAME) build
+
 re: fclean $(LIB) $(NAME)
-	
+
+l: LFLAGS = -flto -O3 $(INC) -ldl -lglfw -pthread -lm
+l: all
+
+rel: LFLAGS = -flto -O3 $(INC) -ldl -lglfw -pthread -lm
+rel: fclean all
+
 mem:
 	memdetect $(SRC) $(LIB) $(LFLAGS) $(1)
