@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   fractol.h                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/18 18:01:05 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/09/15 21:12:49 by lmuzio           ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   fractol.h                                          :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/01/18 18:01:05 by lmuzio        #+#    #+#                 */
+/*   Updated: 2023/07/06 16:58:38 by XEDGit        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-# include <mlx.h>
+# include "MLX42/MLX42_Int.h"
 # include <stdlib.h>
 # include <unistd.h>
 # include <math.h>
@@ -36,11 +36,11 @@ typedef struct s_complex
 
 typedef struct s_data
 {
-	void	*img;
-	char	*addr;
-	int		bpp;
-	int		l_l;
-	int		e;
+	mlx_image_t	*img;
+	char		*addr;
+	int			bpp;
+	int			l_l;
+	int			e;
 }				t_data;
 
 typedef struct s_vars	t_vars;
@@ -49,13 +49,11 @@ typedef size_t			(*t_func)(t_complex*, int, t_vars *);
 
 typedef struct s_vars
 {
-	void			*mlx;
-	void			*mlx_win;
+	mlx_t			*mlx;
 	int				type;
 	t_func			func;
 	t_coords		*zoom;
-	t_data			*i;
-	t_data			*img_buff;
+	mlx_image_t		*i;
 	unsigned long	*palette;
 	double			xconst;
 	double			yconst;
@@ -69,10 +67,9 @@ typedef struct s_vars
 void			draw_set(t_vars *vars);
 size_t			modulo_colors(double z, int n, int iter, t_vars *vars);
 int				win_close(t_vars *vars, char *msg);
-int				key(int key, t_vars *vars);
-void			img_mlx_pixel_put(t_data *data, int x, int y, int color);
+void			key(mlx_key_data_t keydata, void *vvars);
 void			set_zoom(t_vars *vars, t_coords *coords);
-int				zoom(int key, int x, int y, t_vars *vars);
+void			zoom(double xstep, double ystep, void *vvars);
 void			shift_zoom(t_vars *vars, int x, int y, int direction);
 int				ft_isnum(char *str);
 double			ft_atof(char *s);

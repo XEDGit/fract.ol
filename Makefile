@@ -1,12 +1,18 @@
-SRCS :=  ./src/fractol.c ./src/calcs.c ./src/utils.c ./src/coords.c ./src/colors.c ./src/arguments.c
+SRC_DIR := src
 
-OUTS := ./fractol.o ./calcs.o ./utils.o ./coords.o ./colors.o ./arguments.o
+OBJ_DIR := obj
 
-LIB := libmlx.dylib
+FILES :=  fractol.c calcs.c utils.c coords.c colors.c arguments.c
 
-FLAGS := -Wall -Wextra -Werror -Ofast -mtune=native -march=native -Imlx -Iincludes -c
+SRC := $(addprefix $(SRC_DIR)/, $(FILES))
 
-FLAGS2 := -lm -L. -lmlx -framework OpenGL -framework AppKit
+OBJ := $(addprefix $(OBJ_DIR)/, $(FILES:.c=.o))
+
+LIB := build/libmlx42.a
+
+CFLAGS := -g -Wall -Wextra -Werror -IMLX42/include -Iincludes -c -flto -O3
+
+LFLAGS := -g -L "/Users/$(USER)/.brew/lib" -lglfw -framework Cocoa -framework OpenGL -Iincludes -IMLX42/include -framework IOKit# -flto -O3
 
 GREEN := \033[32m
 
@@ -14,19 +20,25 @@ DEFAULT := \033[39m
 
 NAME := fractol
 
-$(NAME): $(OUTS)
-	gcc $(OUTS) $(FLAGS2) -o $(NAME)
-$(OUTS): $(SRCS) $(LIB)
-	gcc $(SRCS) $(FLAGS)
+all: $(NAME)
+
+$(NAME): $(OBJ) $(LIB)
+	gcc $^ $(LFLAGS) -o $@
+
+$(OBJ_DIR):
+	mkdir -p $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $< $(CFLAGS) -o $@
+
 $(LIB):
-	make -C ./mlx
-	mv ./mlx/$(LIB) .
-all: $(LIB)
-	gcc $(SRCS) $(FLAGS)
-	gcc $(OUTS) $(FLAGS2) -o $(NAME)
+	cmake -S MLX42 -B build
+	cmake --build build -j4
 clean:
-	rm -f $(OUTS)
+	rm -rf $(OBJ_DIR)
 fclean:
-	rm -f $(OUTS) $(NAME) $(LIB)
+	rm -rf $(OBJ_DIR) $(NAME) build
 re: fclean $(LIB) $(NAME)
 	
+mem:
+	memdetect $(SRC) $(LIB) $(LFLAGS) $(1)

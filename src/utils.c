@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/18 18:01:01 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/03/27 21:50:17 by lmuzio           ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   utils.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/01/18 18:01:01 by lmuzio        #+#    #+#                 */
+/*   Updated: 2023/07/06 15:58:48 by XEDGit        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ int	win_close(t_vars *vars, char *msg)
 {
 	if (vars)
 	{
-		if (vars->i->img)
-			mlx_destroy_image(vars->mlx, vars->i->img);
-		if (vars->img_buff->img)
-			mlx_destroy_image(vars->mlx, vars->img_buff->img);
-		if (vars->mlx_win)
-			mlx_destroy_window(vars->mlx, vars->mlx_win);
+		if (vars->mlx)
+		{
+			mlx_close_window(vars->mlx);
+			mlx_terminate(vars->mlx);
+		}
 		free(vars->zoom);
+		vars->zoom = 0;
 	}
 	if (msg == HELP_MSG || msg == ERR_MSG \
 	|| msg == ADD_ARG_MSG || msg == TOO_MANY_ARGS)
@@ -53,34 +53,30 @@ double max)
 	return (first * second + min);
 }
 
-int	key(int key, t_vars *vars)
+void	key(mlx_key_data_t keydata, void *vvars)
 {
 	double	xstep;
 	double	ystep;
+	t_vars	*vars;
 
+	vars = (t_vars *)vvars;
+	if (!vars || !vars->zoom)
+		return ;
 	xstep = fabsl(vars->zoom->xmax - vars->zoom->xmin) / 10;
 	ystep = fabsl(vars->zoom->ymax - vars->zoom->ymin) / 10;
-	shift_view(key, vars, xstep, ystep);
-	if (key == 53)
+	shift_view(keydata.key, vars, xstep, ystep);
+	if (keydata.key == MLX_KEY_ESCAPE)
 		win_close(vars, 0);
-	else if (key == 15)
+	else if (keydata.key == MLX_KEY_R)
 		set_zoom(vars, new_coords(-(vars->x_res / 100), (vars->x_res / 100), \
 		-(vars->y_res / 100), (vars->y_res / 100)));
-	else if (key == 43 && !vars->color_set && vars->palette[P_SIZE] > 12)
+	else if (keydata.key == MLX_KEY_PERIOD && \
+	!vars->color_set && vars->palette[P_SIZE] > 12)
 		vars->palette[P_SIZE] -= 12;
-	else if (key == 43 && vars->color_set)
+	else if (keydata.key == MLX_KEY_PERIOD && vars->color_set)
 		vars->palette[P_SIZE] -= 12;
-	else if (key == 47)
+	else if (keydata.key == MLX_KEY_COMMA)
 		vars->palette[P_SIZE] += 13;
-	else if (key == 35)
+	else if (keydata.key == MLX_KEY_SLASH)
 		vars->palette[P_SIZE] = 0;
-	return (0);
-}
-
-void	img_mlx_pixel_put(t_data *data, int x, int y, int color)
-{
-	char	*dst;
-
-	dst = data->addr + (y * data->l_l + x * (data->bpp / 8));
-	*(unsigned int *)dst = color;
 }
