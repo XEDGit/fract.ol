@@ -29,6 +29,7 @@ int	win_close(t_vars *vars, char *msg)
 {
 	if (vars && vars->mlx)
 	{
+		pthread_mutex_destroy(&vars->mutex);
 		mlx_close_window(vars->mlx);
 		mlx_terminate(vars->mlx);
 	}

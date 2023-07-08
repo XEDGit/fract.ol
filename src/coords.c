@@ -14,9 +14,10 @@
 
 void	zoom(double xstep, double ystep, void *vvars)
 {
-	int32_t	x;
-	int32_t	y;
-	t_vars	*vars;
+	int32_t			x;
+	int32_t			y;
+	t_vars			*vars;
+	// static int		frameskip = 0;
 
 	vars = (t_vars *)vvars;
 	mlx_get_mouse_pos(vars->mlx, &x, &y);
@@ -25,8 +26,6 @@ void	zoom(double xstep, double ystep, void *vvars)
 		xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) / 10;
 		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) / 10;
 		shift_zoom(vars, x, y, 0);
-		vars->zoom = (t_coords){vars->zoom.xmin + xstep, vars->zoom.\
-		xmax - xstep, vars->zoom.ymin + ystep, vars->zoom.ymax - ystep};
 	}
 	else if (ystep < 0)
 	{
@@ -34,33 +33,53 @@ void	zoom(double xstep, double ystep, void *vvars)
 		if (xstep * 5 > 10)
 			return ;
 		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) / 5;
-		// shift_zoom(vars, x, y, 1);
-		vars->zoom = (t_coords){vars->zoom.xmin - xstep, vars->zoom.\
-		xmax + xstep, vars->zoom.ymin - ystep, vars->zoom.ymax + ystep};
+		shift_zoom(vars, x, y, 1);
 	}
+	// if (!frameskip++)
+	// 	draw_set(vars);
+	// if (frameskip == 10)
+	// 	frameskip = 0;
 }
 
 void	shift_zoom(t_vars *vars, int x, int y, int direction)
 {
 	long double	xmov;
 	long double	ymov;
-	long double	xstep;
-	long double	ystep;
 
-	xmov = -map(x, vars->x_res, -1, 1);
-	ymov = -map(y, vars->y_res, -1, 1);
-	xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) / 10;
-	ystep = -fabsl(vars->zoom.ymax - vars->zoom.ymin) / 10;
-	xstep *= xmov;
-	ystep *= ymov;
-	if (direction)
-	{
-		xstep = -xstep;
-		ystep = -ystep;
+	if (!direction) {
+		xmov = map(x, vars->x_res, vars->zoom.xmin, vars->zoom.xmax);
+		ymov = map(y, vars->y_res, vars->zoom.ymin, vars->zoom.ymax);
+		vars->zoom = (t_coords){\
+			xmov + ((vars->zoom.xmin - xmov) * 0.9),\
+			xmov + ((vars->zoom.xmax - xmov) * 0.9),\
+			ymov + ((vars->zoom.ymin - ymov) * 0.9),\
+			ymov + ((vars->zoom.ymax - ymov) * 0.9),\
+		};
 	}
-	vars->zoom = (t_coords){\
-		vars->zoom.xmin - xstep, vars->zoom.xmax - xstep, \
-		vars->zoom.ymin + ystep, vars->zoom.ymax + ystep};
+	else {
+		// xmov = map(x, vars->x_res, -1, 1);
+		// ymov = map(y, vars->y_res, -1, 1);
+		xmov = (fabsl(vars->zoom.xmax - vars->zoom.xmin) / 10);
+		ymov = (fabsl(vars->zoom.ymax - vars->zoom.ymin) / 10);
+		vars->zoom = (t_coords){\
+			vars->zoom.xmin - xmov, vars->zoom.xmax + xmov, \
+			vars->zoom.ymin - ymov, vars->zoom.ymax + ymov};
+	}
+
+	// xmov = -map(x, vars->x_res, -1, 1);
+	// ymov = -map(y, vars->y_res, -1, 1);
+	// xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) / 10;
+	// ystep = -fabsl(vars->zoom.ymax - vars->zoom.ymin) / 10;
+	// xstep *= xmov;
+	// ystep *= ymov;
+	// if (direction)
+	// {
+	// 	xstep = -xstep;
+	// 	ystep = -ystep;
+	// }
+	// vars->zoom = (t_coords){
+		// vars->zoom.xmin - xstep, vars->zoom.xmax - xstep, 
+		// vars->zoom.ymin + ystep, vars->zoom.ymax + ystep};
 }
 
 void	shift_view(int key, t_vars *vars, long double xstep, long double ystep)

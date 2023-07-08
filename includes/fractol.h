@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <math.h>
+# include <pthread.h>
 
 # define HELP_MSG "Usage: ./fractol <lowcase initial\
  of set's name> <optional args> <max iterations> <additional args>\n\n\
@@ -35,6 +36,7 @@ Julia's step:\tthis is gonna change the intensity\n\
 # define TOO_MANY_ARGS "You typed too many additional arguments, \
 use maximum 3 more than required for Julia, 2 more for others\n"
 # define P_SIZE 16
+# define MAX_THREADS 10
 
 typedef struct s_coords
 {
@@ -71,7 +73,32 @@ typedef struct s_vars
 	int				y_res;
 	long double		j_step;
 	int				color_set;
+	pthread_mutex_t	mutex;
 }	t_vars;
+
+typedef struct a
+{
+	int	x_res;
+	int	y_res;
+	mlx_image_t	*i;
+	t_coords	zoom;
+	int			type;
+	long double	xconst;
+	long double	yconst;
+	int			iters;
+	t_func		func;
+	t_vars		*ptr;
+}	t_a;
+
+typedef struct s_threadvars
+{
+	pthread_t	thread;
+	t_complex	complex;
+	t_vars		*vars;
+	int			x;
+	int			y;
+	int			y_fract;
+}	t_threadvars;
 
 long double			ft_atof(char *s);
 void				atof_cycle(char *s, long double *res);
@@ -86,7 +113,7 @@ size_t				calc_mandel(t_complex *comp, int iter, t_vars *vars);
 size_t				calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
 void				generate_palette(unsigned long *palette);
 void				parse_settings(t_vars *v, char **argv, int argc);
-void				loop(t_vars *vars);
+// void				loop(t_vars *vars);
 void				shift_view(int key, t_vars *vars, long double xstep, \
 							long double ystep);
 long double	map(long double middle, long double win_size, \

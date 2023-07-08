@@ -38,13 +38,13 @@ size_t	modulo_colors(long double z, int n, int iter, t_vars *vars)
 	n = (int)temp;
 	temp = temp - n;
 	if (!vars->color_set)
-		i = interpolate(map(n, iter, 0x888888ff, 0xddddddff) + \
-		vars->palette[P_SIZE], map(n + 1, iter, 0x888888ff, 0xddddddff) \
+		i = interpolate(map(n, iter, 0x000000ff, 0xffffffff) + \
+		vars->palette[P_SIZE], map(n + 1, iter, 0x000000ff, 0xffffffff) \
 		+ vars->palette[P_SIZE], temp);
 	else
 		i = interpolate(vars->palette[n % P_SIZE] + vars->palette[P_SIZE], \
 			vars->palette[(n + 1) % P_SIZE] + vars->palette[P_SIZE], temp);
-	return (i);
+	return (((i >> 2) << 2) + 0xff);
 }
 
 void	generate_palette(unsigned long *palette)

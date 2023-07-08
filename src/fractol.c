@@ -12,45 +12,55 @@
 
 #include "fractol.h"
 
+void	*thread_main(void *vvars)
+{
+	t_threadvars	*v;
+
+	v = (t_threadvars *)vvars;
+	while (v->y < v->y_fract)
+	{
+		v->x = 0;
+		while (v->x < v->vars->x_res)
+		{
+			v->complex.b = map(v->y, v->vars->y_res, v->vars->zoom.ymin, \
+				v->vars->zoom.ymax);
+			v->complex.a = map(v->x, v->vars->x_res, v->vars->zoom.xmin, \
+				v->vars->zoom.xmax);
+			v->complex.az = v->complex.a;
+			v->complex.bz = v->complex.b;
+			if (v->vars->type)
+			{
+				v->complex.az = v->vars->xconst;
+				v->complex.bz = v->vars->yconst;
+			}
+			// pthread_mutex_lock(&v->vars->ptr->mutex);
+			mlx_put_pixel(v->vars->i, v->x, v->y, v->vars->func(&v->complex, \
+					v->vars->iters, v->vars));
+			// pthread_mutex_unlock(&v->vars.ptr->mutex);
+			v->x++;
+		}
+		v->y++;
+	}
+	pthread_exit(0);
+	return (0);
+}
+
 void	draw_set(t_vars *vars)
 {
-	int				x;
-	int				y;
-	t_complex		complex;
+	t_threadvars	tvars[MAX_THREADS];
+	int				nthreads;
 
-	y = 0;
-	while (y < vars->y_res)
+	nthreads = 0;
+	while (nthreads < MAX_THREADS)
 	{
-		x = 0;
-		if (y == vars->y_res / 2)
-		{
-			mlx_put_pixel(vars->i, x, y, (0xff << 24) + 0xff);
-			y++;
-			continue ;
-		}
-		while (x < vars->x_res)
-		{
-			if (x == vars->x_res / 2)
-			{
-				mlx_put_pixel(vars->i, x, y, (0xff << 24) + 0xff);
-				x++;
-				continue ;
-			}
-			complex.b = map(y, vars->y_res, vars->zoom.ymin, vars->zoom.ymax);
-			complex.a = map(x, vars->x_res, vars->zoom.xmin, vars->zoom.xmax);
-			complex.az = complex.a;
-			complex.bz = complex.b;
-			if (vars->type)
-			{
-				complex.az = vars->xconst;
-				complex.bz = vars->yconst;
-			}
-			mlx_put_pixel(vars->i, x, y, vars->func(&complex, \
-			vars->iters, vars));
-			x++;
-		}
-		y++;
+		tvars[nthreads] = (t_threadvars){
+			0, {0}, vars, 0, (vars->y_res / MAX_THREADS) * nthreads, (vars->y_res / MAX_THREADS) * (nthreads + 1)
+		};
+		pthread_create(&tvars[nthreads].thread, 0, &thread_main, &tvars[nthreads]);
+		nthreads++;
 	}
+	while (nthreads--)
+		pthread_join(tvars[nthreads].thread, 0);
 }
 
 void	check_args(t_vars *v, char **argv, int argc)
@@ -82,8 +92,10 @@ void	check_args(t_vars *v, char **argv, int argc)
 
 void	loop(t_vars *vars)
 {
-	draw_set(vars);
-	mlx_image_to_window(vars->mlx, vars->i, 0, 0);
+	static	t_coords last_zoom = {-100, -100, 0, 0};
+	if (last_zoom.xmax != vars->zoom.xmax || last_zoom.xmin != vars->zoom.xmin)
+		draw_set(vars);
+	last_zoom = vars->zoom;
 	return ;
 }
 
@@ -93,6 +105,7 @@ void	initialize_vars(t_vars *vars)
 	vars->i = mlx_new_image(vars->mlx, vars->x_res, vars->y_res);
 	if (!vars->i)
 		win_close(vars, ERR_MSG);
+	pthread_mutex_init(&vars->mutex, 0);
 }
 
 int	main(int argc, char **argv)
@@ -107,6 +120,7 @@ int	main(int argc, char **argv)
 	-(vars.y_res / 100), (vars.y_res / 100)};
 	mlx_key_hook(vars.mlx, &key, &vars);
 	mlx_scroll_hook(vars.mlx, &zoom, &vars);
+	draw_set(&vars);
 	mlx_loop_hook(vars.mlx, (void (*)(void *))loop, &vars);
 	mlx_image_to_window(vars.mlx, vars.i, 0, 0);
 	mlx_loop(vars.mlx);
