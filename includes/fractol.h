@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:01:05 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/06 16:58:38 by XEDGit        ########   odam.nl         */
+/*   Updated: 2023/07/09 00:56:03 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,20 +76,6 @@ typedef struct s_vars
 	pthread_mutex_t	mutex;
 }	t_vars;
 
-typedef struct a
-{
-	int	x_res;
-	int	y_res;
-	mlx_image_t	*i;
-	t_coords	zoom;
-	int			type;
-	long double	xconst;
-	long double	yconst;
-	int			iters;
-	t_func		func;
-	t_vars		*ptr;
-}	t_a;
-
 typedef struct s_threadvars
 {
 	pthread_t	thread;
@@ -113,7 +99,7 @@ size_t				calc_mandel(t_complex *comp, int iter, t_vars *vars);
 size_t				calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
 void				generate_palette(unsigned long *palette);
 void				parse_settings(t_vars *v, char **argv, int argc);
-// void				loop(t_vars *vars);
+void				loop(t_vars *vars);
 void				shift_view(int key, t_vars *vars, long double xstep, \
 							long double ystep);
 long double	map(long double middle, long double win_size, \

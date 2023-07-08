@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   calcs.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lmuzio <lmuzio@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/18 18:00:42 by lmuzio            #+#    #+#             */
-/*   Updated: 2022/03/26 21:41:50 by lmuzio           ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   calcs.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/01/18 18:00:42 by lmuzio        #+#    #+#                 */
+/*   Updated: 2023/07/09 01:03:14 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 long double	ft_atof(char *s)
 {
 	long double	res;
-	int		min;
+	int			min;
 
 	res = 0;
 	min = 0;
@@ -55,7 +55,7 @@ void	atof_cycle(char *s, long double *res)
 
 size_t	calc_mandel(t_complex *comp, int iter, t_vars *vars)
 {
-	int		n;
+	int			n;
 	long double	tempa;
 	long double	tempb;
 
@@ -76,7 +76,7 @@ size_t	calc_mandel(t_complex *comp, int iter, t_vars *vars)
 
 size_t	calc_burning_ship(t_complex *comp, int iter, t_vars *vars)
 {
-	int		n;
+	int			n;
 	long double	tempa;
 	long double	tempb;
 
@@ -93,4 +93,23 @@ size_t	calc_burning_ship(t_complex *comp, int iter, t_vars *vars)
 		n++;
 	}
 	return (modulo_colors(tempa + tempb, n, iter, vars));
+}
+
+void	loop(t_vars *vars)
+{
+	static t_coords	last_zoom = {-100, -100, 0, 0};
+	static int		fps = 0, seconds = 5;
+	static time_t	t = 0;
+
+	fps++;
+	if (t + seconds < time(0))
+	{
+		printf("fps: %d\n", fps / seconds);
+		fps = 0;
+		t = time(0);
+	}
+	if (last_zoom.xmax != vars->zoom.xmax || last_zoom.xmin != vars->zoom.xmin)
+		draw_set(vars);
+	last_zoom = vars->zoom;
+	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:58 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/06 15:34:35 by XEDGit        ########   odam.nl         */
+/*   Updated: 2023/07/09 00:54:31 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,12 @@ void	*thread_main(void *vvars)
 				v->complex.az = v->vars->xconst;
 				v->complex.bz = v->vars->yconst;
 			}
-			// pthread_mutex_lock(&v->vars->ptr->mutex);
-			mlx_put_pixel(v->vars->i, v->x, v->y, v->vars->func(&v->complex, \
+			mlx_put_pixel(v->vars->i, v->x++, v->y, v->vars->func(&v->complex, \
 					v->vars->iters, v->vars));
-			// pthread_mutex_unlock(&v->vars.ptr->mutex);
-			v->x++;
 		}
 		v->y++;
 	}
 	pthread_exit(0);
-	return (0);
 }
 
 void	draw_set(t_vars *vars)
@@ -54,9 +50,11 @@ void	draw_set(t_vars *vars)
 	while (nthreads < MAX_THREADS)
 	{
 		tvars[nthreads] = (t_threadvars){
-			0, {0}, vars, 0, (vars->y_res / MAX_THREADS) * nthreads, (vars->y_res / MAX_THREADS) * (nthreads + 1)
+			0, {0}, vars, 0, (vars->y_res / MAX_THREADS) * nthreads, \
+			(vars->y_res / MAX_THREADS) * (nthreads + 1)
 		};
-		pthread_create(&tvars[nthreads].thread, 0, &thread_main, &tvars[nthreads]);
+		pthread_create(&tvars[nthreads].thread, 0, \
+			&thread_main, &tvars[nthreads]);
 		nthreads++;
 	}
 	while (nthreads--)
@@ -90,15 +88,6 @@ void	check_args(t_vars *v, char **argv, int argc)
 	parse_settings(v, argv, argc);
 }
 
-void	loop(t_vars *vars)
-{
-	static	t_coords last_zoom = {-100, -100, 0, 0};
-	if (last_zoom.xmax != vars->zoom.xmax || last_zoom.xmin != vars->zoom.xmin)
-		draw_set(vars);
-	last_zoom = vars->zoom;
-	return ;
-}
-
 void	initialize_vars(t_vars *vars)
 {
 	vars->mlx = mlx_init(vars->x_res, vars->y_res, "Fract.ol", false);
@@ -116,7 +105,7 @@ int	main(int argc, char **argv)
 	check_args(&vars, argv, argc);
 	initialize_vars(&vars);
 	generate_palette(vars.palette);
-	vars.zoom = (t_coords){-(vars.x_res / 100), (vars.x_res / 100), \
+	vars.zoom = (t_coords){(-(vars.x_res / 100)), (vars.x_res / 100), \
 	-(vars.y_res / 100), (vars.y_res / 100)};
 	mlx_key_hook(vars.mlx, &key, &vars);
 	mlx_scroll_hook(vars.mlx, &zoom, &vars);

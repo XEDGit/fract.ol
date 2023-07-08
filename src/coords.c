@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:54 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/06 15:57:36 by XEDGit        ########   odam.nl         */
+/*   Updated: 2023/07/09 00:51:13 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	zoom(double xstep, double ystep, void *vvars)
 	int32_t			x;
 	int32_t			y;
 	t_vars			*vars;
-	// static int		frameskip = 0;
 
 	vars = (t_vars *)vvars;
 	mlx_get_mouse_pos(vars->mlx, &x, &y);
@@ -35,10 +34,6 @@ void	zoom(double xstep, double ystep, void *vvars)
 		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) / 5;
 		shift_zoom(vars, x, y, 1);
 	}
-	// if (!frameskip++)
-	// 	draw_set(vars);
-	// if (frameskip == 10)
-	// 	frameskip = 0;
 }
 
 void	shift_zoom(t_vars *vars, int x, int y, int direction)
@@ -46,40 +41,26 @@ void	shift_zoom(t_vars *vars, int x, int y, int direction)
 	long double	xmov;
 	long double	ymov;
 
-	if (!direction) {
+	if (!direction)
+	{
 		xmov = map(x, vars->x_res, vars->zoom.xmin, vars->zoom.xmax);
 		ymov = map(y, vars->y_res, vars->zoom.ymin, vars->zoom.ymax);
 		vars->zoom = (t_coords){\
-			xmov + ((vars->zoom.xmin - xmov) * 0.9),\
-			xmov + ((vars->zoom.xmax - xmov) * 0.9),\
-			ymov + ((vars->zoom.ymin - ymov) * 0.9),\
-			ymov + ((vars->zoom.ymax - ymov) * 0.9),\
+			xmov + ((vars->zoom.xmin - xmov) * 0.9), \
+			xmov + ((vars->zoom.xmax - xmov) * 0.9), \
+			ymov + ((vars->zoom.ymin - ymov) * 0.9), \
+			ymov + ((vars->zoom.ymax - ymov) * 0.9), \
 		};
 	}
-	else {
-		// xmov = map(x, vars->x_res, -1, 1);
-		// ymov = map(y, vars->y_res, -1, 1);
+	else
+	{
 		xmov = (fabsl(vars->zoom.xmax - vars->zoom.xmin) / 10);
 		ymov = (fabsl(vars->zoom.ymax - vars->zoom.ymin) / 10);
 		vars->zoom = (t_coords){\
 			vars->zoom.xmin - xmov, vars->zoom.xmax + xmov, \
-			vars->zoom.ymin - ymov, vars->zoom.ymax + ymov};
+			vars->zoom.ymin - ymov, vars->zoom.ymax + ymov \
+		};
 	}
-
-	// xmov = -map(x, vars->x_res, -1, 1);
-	// ymov = -map(y, vars->y_res, -1, 1);
-	// xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) / 10;
-	// ystep = -fabsl(vars->zoom.ymax - vars->zoom.ymin) / 10;
-	// xstep *= xmov;
-	// ystep *= ymov;
-	// if (direction)
-	// {
-	// 	xstep = -xstep;
-	// 	ystep = -ystep;
-	// }
-	// vars->zoom = (t_coords){
-		// vars->zoom.xmin - xstep, vars->zoom.xmax - xstep, 
-		// vars->zoom.ymin + ystep, vars->zoom.ymax + ystep};
 }
 
 void	shift_view(int key, t_vars *vars, long double xstep, long double ystep)
