@@ -12,7 +12,7 @@ LIB := build/libmlx42.a
 
 INC := -Iincludes -IMLX42/include
 
-CFLAGS := -Wall -Wextra -Werror $(INC) -c -flto -O3 -fno-stack-protector
+CFLAGS := -Wall -Wextra -Werror $(INC) -c -flto -O3
 
 LFLAGS := -L "/Users/$(USER)/.brew/lib" -lglfw -framework Cocoa -framework OpenGL $(INC) -framework IOKit -flto -O3
 

@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:01:05 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/09 00:56:03 by lmuzio        ########   odam.nl         */
+/*   Updated: 2023/07/09 12:46:49 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ Julia's step:\tthis is gonna change the intensity\n\
 # define TOO_MANY_ARGS "You typed too many additional arguments, \
 use maximum 3 more than required for Julia, 2 more for others\n"
 # define P_SIZE 16
-# define MAX_THREADS 10
+# define MAX_THREADS 15
 
 typedef struct s_coords
 {
@@ -73,7 +73,7 @@ typedef struct s_vars
 	int				y_res;
 	long double		j_step;
 	int				color_set;
-	pthread_mutex_t	mutex;
+	int				typeog;
 }	t_vars;
 
 typedef struct s_threadvars
@@ -86,6 +86,13 @@ typedef struct s_threadvars
 	int			y_fract;
 }	t_threadvars;
 
+enum Fractal
+{
+	MANDELBROT,
+	BURNING_SHIP,
+	NUM_FRACTALS
+};
+
 long double			ft_atof(char *s);
 void				atof_cycle(char *s, long double *res);
 void				draw_set(t_vars *vars);
@@ -93,6 +100,7 @@ size_t				modulo_colors(long double z, int n, int iter, t_vars *vars);
 int					win_close(t_vars *vars, char *msg);
 void				key(mlx_key_data_t keydata, void *vvars);
 void				zoom(double xstep, double ystep, void *vvars);
+void				mouse(mouse_key_t button, action_t action, modifier_key_t mods, void* vvars);
 void				shift_zoom(t_vars *vars, int x, int y, int direction);
 int					ft_isnum(char *str);
 size_t				calc_mandel(t_complex *comp, int iter, t_vars *vars);
@@ -100,6 +108,7 @@ size_t				calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
 void				generate_palette(unsigned long *palette);
 void				parse_settings(t_vars *v, char **argv, int argc);
 void				loop(t_vars *vars);
+void				change_fractal(t_vars *vars, int type);
 void				shift_view(int key, t_vars *vars, long double xstep, \
 							long double ystep);
 long double	map(long double middle, long double win_size, \

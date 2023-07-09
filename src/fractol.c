@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:58 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/09 00:54:31 by lmuzio        ########   odam.nl         */
+/*   Updated: 2023/07/09 13:11:14 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,55 +61,68 @@ void	draw_set(t_vars *vars)
 		pthread_join(tvars[nthreads].thread, 0);
 }
 
-void	check_args(t_vars *v, char **argv, int argc)
+void	change_fractal(t_vars *vars, int type)
 {
-	v->type = 0;
-	if (argc < 3 || ft_isnum(argv[2]))
-		win_close(0, HELP_MSG);
-	v->iters = ft_atof(argv[2]);
-	if (argv[1][0] == 'm' && !argv[1][1])
-		v->func = calc_mandel;
-	else if (argv[1][0] == 'j' && !argv[1][1])
+	static t_func	algos[2] = {
+		calc_mandel,
+		calc_burning_ship,
+	};
+	static int		current = MANDELBROT;
+
+	if (type == -1)
 	{
-		if (argc < 5)
-			win_close(v, HELP_MSG);
-		v->xconst = ft_atof(argv[2]);
-		v->yconst = ft_atof(argv[3]);
-		v->iters = ft_atof(argv[4]);
-		v->func = calc_mandel;
-		v->type = 1;
+		type = current + 1;
+		if (type >= NUM_FRACTALS)
+			type = 0;
 	}
-	else if (argv[1][0] == 'b' && !argv[1][1])
-		v->func = calc_burning_ship;
-	else
-		win_close(0, HELP_MSG);
-	if (v->iters <= 0)
-		win_close(0, ERR_MSG);
-	parse_settings(v, argv, argc);
+	vars->func = algos[type];
+	if (type == 1)
+	{
+		vars->yconst = -1.762;
+		vars->xconst = 0.028;
+	}
+	current = type;
 }
 
 void	initialize_vars(t_vars *vars)
 {
-	vars->mlx = mlx_init(vars->x_res, vars->y_res, "Fract.ol", false);
+	vars->iters = 200;
+	vars->j_step = 0.001;
+	vars->x_res = 1000;
+	vars->y_res = 1000;
+	vars->xconst = 0;
+	vars->yconst = 0;
+	vars->typeog = -1;
+	vars->color_set = 0;
+	change_fractal(vars, MANDELBROT);
+	vars->mlx = mlx_init(vars->x_res, vars->y_res, "Fract.ol", true);
 	vars->i = mlx_new_image(vars->mlx, vars->x_res, vars->y_res);
 	if (!vars->i)
 		win_close(vars, ERR_MSG);
-	pthread_mutex_init(&vars->mutex, 0);
 }
 
-int	main(int argc, char **argv)
+void	resize(int width, int height, void* vvars)
+{
+	t_vars		*vars;
+
+	vars = (t_vars *)vvars;
+	vars->x_res = width;
+	vars->y_res = height;
+	mlx_resize_image(vars->i, width, height);
+	key((mlx_key_data_t){MLX_KEY_R, MLX_PRESS, 0, 0}, vars);
+}
+
+int	main()
 {
 	t_vars			vars;
 
 	vars = (t_vars){0};
-	check_args(&vars, argv, argc);
 	initialize_vars(&vars);
 	generate_palette(vars.palette);
-	vars.zoom = (t_coords){(-(vars.x_res / 100)), (vars.x_res / 100), \
-	-(vars.y_res / 100), (vars.y_res / 100)};
 	mlx_key_hook(vars.mlx, &key, &vars);
 	mlx_scroll_hook(vars.mlx, &zoom, &vars);
-	draw_set(&vars);
+	mlx_resize_hook(vars.mlx, resize, &vars);
+	mlx_mouse_hook(vars.mlx, mouse, &vars);
 	mlx_loop_hook(vars.mlx, (void (*)(void *))loop, &vars);
 	mlx_image_to_window(vars.mlx, vars.i, 0, 0);
 	mlx_loop(vars.mlx);

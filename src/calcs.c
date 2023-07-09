@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:42 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/09 01:03:14 by lmuzio        ########   odam.nl         */
+/*   Updated: 2023/07/09 12:47:57 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,17 +98,20 @@ size_t	calc_burning_ship(t_complex *comp, int iter, t_vars *vars)
 void	loop(t_vars *vars)
 {
 	static t_coords	last_zoom = {-100, -100, 0, 0};
-	static int		fps = 0, seconds = 5;
-	static time_t	t = 0;
+	int				mpos[2];
+	int				mousedown;
 
-	fps++;
-	if (t + seconds < time(0))
+	mousedown = mlx_is_mouse_down(vars->mlx, MLX_MOUSE_BUTTON_LEFT);
+	if (mousedown)
 	{
-		printf("fps: %d\n", fps / seconds);
-		fps = 0;
-		t = time(0);
+		if (vars->typeog == -1)
+			vars->typeog = vars->type;
+		vars->type = 1;
+		mlx_get_mouse_pos(vars->mlx, &mpos[0], &mpos[1]);
+		vars->xconst = map(mpos[0], vars->x_res, vars->zoom.xmin, vars->zoom.xmax);
+		vars->yconst = map(mpos[1], vars->y_res, vars->zoom.ymin, vars->zoom.ymax);
 	}
-	if (last_zoom.xmax != vars->zoom.xmax || last_zoom.xmin != vars->zoom.xmin)
+	if (mousedown || last_zoom.xmax != vars->zoom.xmax || last_zoom.xmin != vars->zoom.xmin)
 		draw_set(vars);
 	last_zoom = vars->zoom;
 	return ;
