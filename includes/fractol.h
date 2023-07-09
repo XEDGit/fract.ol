@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:01:05 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/09 12:46:49 by lmuzio        ########   odam.nl         */
+/*   Updated: 2023/07/09 13:24:30 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ typedef struct s_vars
 	t_func			func;
 	t_coords		zoom;
 	mlx_image_t		*i;
-	unsigned long	palette[P_SIZE];
+	unsigned long	palette[P_SIZE + 1];
 	long double		xconst;
 	long double		yconst;
 	int				iters;
