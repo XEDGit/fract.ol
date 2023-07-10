@@ -6,9 +6,10 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:54 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/09 00:51:13 by lmuzio        ########   odam.nl         */
+/*   Updated: 2023/07/10 12:33:21 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include <fractol.h>
 
 void	resize(int width, int height, void *vvars)
@@ -24,10 +25,10 @@ void	resize(int width, int height, void *vvars)
 
 int	key2(mlx_key_data_t k, t_vars *vars)
 {
-	if (k.key == MLX_KEY_COMMA && vars->palette[P_SIZE] > 500)
-			vars->palette[P_SIZE] -= 500;
-	else if (k.key == MLX_KEY_PERIOD)
-		vars->palette[P_SIZE] += 500;
+	if (k.key == MLX_KEY_COMMA && vars->palette[P_SIZE] > 0x11111100)
+			vars->palette[P_SIZE] -= 0x01111100;
+	else if (k.key == MLX_KEY_PERIOD && vars->palette[P_SIZE] < 0xffffff00)
+		vars->palette[P_SIZE] += 0x01111100;
 	else if (k.key == MLX_KEY_TAB && k.action == MLX_PRESS)
 		change_fractal(vars, -1);
 	else if (k.key == MLX_KEY_RIGHT_BRACKET && vars->iters < 1000 && \

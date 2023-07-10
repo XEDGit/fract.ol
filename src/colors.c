@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:50 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/06 16:49:03 by XEDGit        ########   odam.nl         */
+/*   Updated: 2023/07/10 12:32:28 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ size_t	modulo_colors(long double z, int n, int iter, t_vars *vars)
 	n = (int)temp;
 	temp = temp - n;
 	if (!vars->color_set)
-		i = interpolate(map(n, iter, 0x000000ff, 0xffffffff) + \
-		vars->palette[P_SIZE], map(n + 1, iter, 0x000000ff, 0xffffffff) \
+		i = interpolate(map(n, iter + 1, 0x111111ff, 0x222222ff) + \
+		vars->palette[P_SIZE], map(n + 1, iter + 1, 0x111111ff, 0x222222ff) \
 		+ vars->palette[P_SIZE], temp);
 	else
 		i = interpolate(vars->palette[n % P_SIZE] + vars->palette[P_SIZE], \
