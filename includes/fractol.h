@@ -19,22 +19,24 @@
 # include <math.h>
 # include <pthread.h>
 
-# define HELP_MSG "Usage: ./fractol <lowcase initial\
- of set's name> <optional args> <max iterations> <additional args>\n\n\
-Available Sets:\n\t\
-m <max iterations>:\t\t\tMandelbrot\n\t\
-b <max iterations>:\t\t\tBurning ship\n\t\
-j <float> <float> <max iterations>:\tJulia\t\t\n"
+# define HELP_MSG "This is a help message, to run the program \
+without displaying this do not add arguments after ./fractol\n\n\
+Commands:\n\
+\tTAB:	Change fractal displayed\n\
+\tR:	Reload original zoom\n\
+\tC:	Change color set\n\
+\tJ:	Visualize Julia's set of the current fractal\n\
+\t.:	Shift color\n\
+\t,:	Shift color backwards\n\
+\t/:	Reset color shift\n\
+\t-: 	Zoom out\n\
+\t+(=):	Zoom in\n\
+\tSCROLL:	Zoom in/out\n\
+\tRCLICK:	Visualize Julia's set at mouse coordinates\n\
+\tWASD:	Change constants of Julia's set\n\
+\tARROWS:	Move within the scene\n\
+\tESC:	Exit\n"
 # define ERR_MSG "Program terminated. An error occourred\n"
-# define ADD_ARG_MSG "An error occourred while parsing additional arguments.\n\
-Through additional arguments you can define different values:\n\n\
-Color palette:\t0: procedurally generated palette\n\t\t1: fixed palette\n\n\
-Window size:\ttype <x size>x<y size>. Ex: 1920x1080\n\n\
-Julia's step:\tthis is gonna change the intensity\n\
-\t\tof the WASD controls when viewing Julia's set.\n\
-\t\tType a decimal (not integer) to set this value. Ex: 0.01\n"
-# define TOO_MANY_ARGS "You typed too many additional arguments, \
-use maximum 3 more than required for Julia, 2 more for others\n"
 # define P_SIZE 16
 # define MAX_THREADS 15
 
@@ -86,31 +88,32 @@ typedef struct s_threadvars
 	int			y_fract;
 }	t_threadvars;
 
-enum Fractal
+enum e_fractal
 {
 	MANDELBROT,
 	BURNING_SHIP,
 	NUM_FRACTALS
 };
 
-long double			ft_atof(char *s);
-void				atof_cycle(char *s, long double *res);
-void				draw_set(t_vars *vars);
-size_t				modulo_colors(long double z, int n, int iter, t_vars *vars);
-int					win_close(t_vars *vars, char *msg);
-void				key(mlx_key_data_t keydata, void *vvars);
-void				zoom(double xstep, double ystep, void *vvars);
-void				mouse(mouse_key_t button, action_t action, modifier_key_t mods, void* vvars);
-void				shift_zoom(t_vars *vars, int x, int y, int direction);
-int					ft_isnum(char *str);
-size_t				calc_mandel(t_complex *comp, int iter, t_vars *vars);
-size_t				calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
-void				generate_palette(unsigned long *palette);
-void				parse_settings(t_vars *v, char **argv, int argc);
-void				loop(t_vars *vars);
-void				change_fractal(t_vars *vars, int type);
-void				shift_view(int key, t_vars *vars, long double xstep, \
-							long double ystep);
+long double	ft_atof(char *s);
+void		atof_cycle(char *s, long double *res);
+void		draw_set(t_vars *vars);
+size_t		modulo_colors(long double z, int n, int iter, t_vars *vars);
+int			win_close(t_vars *vars, char *msg);
+void		key(mlx_key_data_t keydata, void *vvars);
+void		zoom(double xstep, double ystep, void *vvars);
+void		resize(int width, int height, void *vvars);
+void		mouse(mouse_key_t button, action_t action, \
+				modifier_key_t mods, void *vvars);
+void		print(const char *s);
+void		shift_zoom(t_vars *vars, int x, int y, int direction);
+size_t		calc_mandel(t_complex *comp, int iter, t_vars *vars);
+size_t		calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
+void		generate_palette(unsigned long *palette);
+void		loop(t_vars *vars);
+void		change_fractal(t_vars *vars, int type);
+int			shift_view(int key, t_vars *vars, long double xstep, \
+					long double ystep);
 long double	map(long double middle, long double win_size, \
 					long double min, long double max);
 

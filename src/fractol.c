@@ -101,29 +101,25 @@ void	initialize_vars(t_vars *vars)
 		win_close(vars, ERR_MSG);
 }
 
-void	resize(int width, int height, void* vvars)
-{
-	t_vars		*vars;
-
-	vars = (t_vars *)vvars;
-	vars->x_res = width;
-	vars->y_res = height;
-	mlx_resize_image(vars->i, width, height);
-	key((mlx_key_data_t){MLX_KEY_R, MLX_PRESS, 0, 0}, vars);
-}
-
-int	main()
+int	main(int argc, char **argv)
 {
 	t_vars			vars;
 
+	if (argc > 1)
+	{
+		print(HELP_MSG);
+		return (0);
+	}
+	(void)argv;
 	vars = (t_vars){0};
 	initialize_vars(&vars);
 	generate_palette(vars.palette);
 	mlx_key_hook(vars.mlx, &key, &vars);
 	mlx_scroll_hook(vars.mlx, &zoom, &vars);
-	mlx_resize_hook(vars.mlx, resize, &vars);
+	mlx_resize_hook(vars.mlx, &resize, &vars);
 	mlx_mouse_hook(vars.mlx, mouse, &vars);
 	mlx_loop_hook(vars.mlx, (void (*)(void *))loop, &vars);
+	key((mlx_key_data_t){MLX_KEY_R, MLX_PRESS, 0, 0}, &vars);
 	mlx_image_to_window(vars.mlx, vars.i, 0, 0);
 	mlx_loop(vars.mlx);
 	mlx_terminate(vars.mlx);

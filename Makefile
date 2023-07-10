@@ -2,7 +2,7 @@ SRC_DIR := src
 
 OBJ_DIR := obj
 
-FILES :=  fractol.c calcs.c utils.c coords.c colors.c arguments.c
+FILES :=  fractol.c calcs.c utils.c coords.c colors.c hooks.c
 
 SRC := $(addprefix $(SRC_DIR)/, $(FILES))
 

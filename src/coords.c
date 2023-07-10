@@ -63,24 +63,20 @@ void	shift_zoom(t_vars *vars, int x, int y, int direction)
 	}
 }
 
-void	shift_view(int key, t_vars *vars, long double xstep, long double ystep)
+int	shift_view(int key, t_vars *vars, long double xstep, long double ystep)
 {
 	if (key == MLX_KEY_DOWN)
-		vars->zoom = (t_coords){\
-		vars->zoom.xmin, vars->zoom.xmax, \
+		vars->zoom = (t_coords){vars->zoom.xmin, vars->zoom.xmax, \
 		vars->zoom.ymin + ystep, vars->zoom.ymax + ystep};
-	if (key == MLX_KEY_UP)
-		vars->zoom = (t_coords){\
-		vars->zoom.xmin, vars->zoom.xmax, \
+	else if (key == MLX_KEY_UP)
+		vars->zoom = (t_coords){vars->zoom.xmin, vars->zoom.xmax, \
 		vars->zoom.ymin - ystep, vars->zoom.ymax - ystep};
-	if (key == MLX_KEY_LEFT)
-		vars->zoom = (t_coords){\
-		vars->zoom.xmin - xstep, vars->zoom.xmax - xstep, \
-		vars->zoom.ymin, vars->zoom.ymax};
-	if (key == MLX_KEY_RIGHT)
-		vars->zoom = (t_coords){\
-		vars->zoom.xmin + xstep, vars->zoom.xmax + xstep, \
-		vars->zoom.ymin, vars->zoom.ymax};
+	else if (key == MLX_KEY_LEFT)
+		vars->zoom = (t_coords){vars->zoom.xmin - xstep, vars->zoom.xmax - \
+		xstep, vars->zoom.ymin, vars->zoom.ymax};
+	else if (key == MLX_KEY_RIGHT)
+		vars->zoom = (t_coords){vars->zoom.xmin + xstep, vars->zoom.xmax + \
+		xstep, vars->zoom.ymin, vars->zoom.ymax};
 	else if (key == MLX_KEY_A)
 		vars->xconst -= vars->j_step;
 	else if (key == MLX_KEY_D)
@@ -89,4 +85,7 @@ void	shift_view(int key, t_vars *vars, long double xstep, long double ystep)
 		vars->yconst -= vars->j_step;
 	else if (key == MLX_KEY_W)
 		vars->yconst += vars->j_step;
+	else
+		return (0);
+	return (1);
 }

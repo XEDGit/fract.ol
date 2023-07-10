@@ -108,10 +108,14 @@ void	loop(t_vars *vars)
 			vars->typeog = vars->type;
 		vars->type = 1;
 		mlx_get_mouse_pos(vars->mlx, &mpos[0], &mpos[1]);
-		vars->xconst = map(mpos[0], vars->x_res, vars->zoom.xmin, vars->zoom.xmax);
-		vars->yconst = map(mpos[1], vars->y_res, vars->zoom.ymin, vars->zoom.ymax);
+		vars->xconst = map(mpos[0], vars->x_res, vars->zoom.xmin, \
+		vars->zoom.xmax);
+		vars->yconst = map(mpos[1], vars->y_res, vars->zoom.ymin, \
+		vars->zoom.ymax);
 	}
-	if (mousedown || last_zoom.xmax != vars->zoom.xmax || last_zoom.xmin != vars->zoom.xmin)
+	if (mousedown \
+	|| last_zoom.xmax != vars->zoom.xmax || last_zoom.xmin != vars->zoom.xmin \
+	|| last_zoom.ymax != vars->zoom.ymax || last_zoom.ymin != vars->zoom.ymin)
 		draw_set(vars);
 	last_zoom = vars->zoom;
 	return ;
