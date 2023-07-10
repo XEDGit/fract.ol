@@ -36,14 +36,25 @@ int	win_close(t_vars *vars, char *msg)
 	exit(0);
 }
 
-long double	map(long double middle, long double win_size, long double min, \
-long double max)
+void	change_fractal(t_vars *vars, int type)
 {
-	long double	first;
-	long double	second;
+	static t_func	algos[2] = {
+		calc_mandel,
+		calc_burning_ship,
+	};
+	static int		current = MANDELBROT;
 
-	first = middle / win_size;
-	second = max - min;
-	min = first * second + min;
-	return (min);
+	if (type == -1)
+	{
+		type = current + 1;
+		if (type >= NUM_FRACTALS)
+			type = 0;
+	}
+	vars->func = algos[type];
+	if (type == 1)
+	{
+		vars->yconst = -1.762;
+		vars->xconst = 0.028;
+	}
+	current = type;
 }

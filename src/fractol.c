@@ -61,29 +61,6 @@ void	draw_set(t_vars *vars)
 		pthread_join(tvars[nthreads].thread, 0);
 }
 
-void	change_fractal(t_vars *vars, int type)
-{
-	static t_func	algos[2] = {
-		calc_mandel,
-		calc_burning_ship,
-	};
-	static int		current = MANDELBROT;
-
-	if (type == -1)
-	{
-		type = current + 1;
-		if (type >= NUM_FRACTALS)
-			type = 0;
-	}
-	vars->func = algos[type];
-	if (type == 1)
-	{
-		vars->yconst = -1.762;
-		vars->xconst = 0.028;
-	}
-	current = type;
-}
-
 void	initialize_vars(t_vars *vars)
 {
 	vars->iters = 200;
@@ -93,12 +70,39 @@ void	initialize_vars(t_vars *vars)
 	vars->xconst = 0;
 	vars->yconst = 0;
 	vars->typeog = -1;
+	vars->update = 0;
 	vars->color_set = 0;
 	change_fractal(vars, MANDELBROT);
 	vars->mlx = mlx_init(vars->x_res, vars->y_res, "Fract.ol", true);
 	vars->i = mlx_new_image(vars->mlx, vars->x_res, vars->y_res);
 	if (!vars->i)
 		win_close(vars, ERR_MSG);
+}
+
+void	loop(t_vars *vars)
+{
+	int				mpos[2];
+	int				mousedown;
+
+	mousedown = mlx_is_mouse_down(vars->mlx, MLX_MOUSE_BUTTON_RIGHT);
+	if (mousedown)
+	{
+		if (vars->typeog == -1)
+			vars->typeog = vars->type;
+		vars->type = 1;
+		mlx_get_mouse_pos(vars->mlx, &mpos[0], &mpos[1]);
+		vars->xconst = map(mpos[0], vars->x_res, vars->zoom.xmin, \
+		vars->zoom.xmax);
+		vars->yconst = map(mpos[1], vars->y_res, vars->zoom.ymin, \
+		vars->zoom.ymax);
+		vars->update = 1;
+	}
+	if (vars->update)
+	{
+		draw_set(vars);
+		vars->update = 0;
+	}
+	return ;
 }
 
 int	main(int argc, char **argv)

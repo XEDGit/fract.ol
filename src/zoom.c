@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   coords.c                                           :+:    :+:            */
+/*   zoom.c                                             :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
@@ -34,6 +34,7 @@ void	zoom(double xstep, double ystep, void *vvars)
 		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) / 5;
 		shift_zoom(vars, x, y, 1);
 	}
+	vars->update = 1;
 }
 
 void	shift_zoom(t_vars *vars, int x, int y, int direction)

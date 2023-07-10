@@ -2,7 +2,9 @@ SRC_DIR := src
 
 OBJ_DIR := obj
 
-FILES :=  fractol.c calcs.c utils.c coords.c colors.c hooks.c
+FILES :=  fractol.c calcs.c utils.c zoom.c colors.c hooks.c
+
+HEADERS := includes/fractol.h
 
 SRC := $(addprefix $(SRC_DIR)/, $(FILES))
 
@@ -24,8 +26,8 @@ NAME := fractol
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(LIB)
-	gcc $^ $(LFLAGS) -o $@
+$(NAME): $(LIB) $(OBJ) $(HEADERS)
+	gcc $(OBJ) $(LIB) $(LFLAGS) -o $@
 
 $(OBJ_DIR):
 	mkdir -p $@
@@ -42,7 +44,7 @@ clean:
 fclean:
 	rm -rf $(OBJ_DIR) $(NAME) build
 
-re: fclean $(LIB) $(NAME)
+re: fclean all
 
 l: LFLAGS = -flto -O3 $(INC) -ldl -lglfw -pthread -lm
 l: all

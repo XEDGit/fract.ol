@@ -60,8 +60,7 @@ void	key3(mlx_key_data_t k, t_vars *vars, int cmd)
 	ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) / 10;
 	if (!cmd && k.action != MLX_RELEASE)
 		cmd = shift_view(k.key, vars, xstep, ystep);
-	if (cmd)
-		draw_set(vars);
+	vars->update = cmd;
 }
 
 void	key(mlx_key_data_t k, void *vvars)
@@ -109,6 +108,5 @@ void	mouse(mouse_key_t button, action_t action, modifier_key_t mods, \
 	}
 	else
 		cmd = 0;
-	if (cmd)
-		draw_set(vars);
+	vars->update = cmd;
 }

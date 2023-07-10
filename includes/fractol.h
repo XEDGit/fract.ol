@@ -76,6 +76,7 @@ typedef struct s_vars
 	long double		j_step;
 	int				color_set;
 	int				typeog;
+	int				update;
 }	t_vars;
 
 typedef struct s_threadvars
@@ -95,10 +96,9 @@ enum e_fractal
 	NUM_FRACTALS
 };
 
-long double	ft_atof(char *s);
-void		atof_cycle(char *s, long double *res);
 void		draw_set(t_vars *vars);
 size_t		modulo_colors(long double z, int n, int iter, t_vars *vars);
+void		generate_palette(unsigned long *palette);
 int			win_close(t_vars *vars, char *msg);
 void		key(mlx_key_data_t keydata, void *vvars);
 void		zoom(double xstep, double ystep, void *vvars);
@@ -106,14 +106,12 @@ void		resize(int width, int height, void *vvars);
 void		mouse(mouse_key_t button, action_t action, \
 				modifier_key_t mods, void *vvars);
 void		print(const char *s);
-void		shift_zoom(t_vars *vars, int x, int y, int direction);
-size_t		calc_mandel(t_complex *comp, int iter, t_vars *vars);
-size_t		calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
-void		generate_palette(unsigned long *palette);
-void		loop(t_vars *vars);
 void		change_fractal(t_vars *vars, int type);
+void		shift_zoom(t_vars *vars, int x, int y, int direction);
 int			shift_view(int key, t_vars *vars, long double xstep, \
 					long double ystep);
+size_t		calc_mandel(t_complex *comp, int iter, t_vars *vars);
+size_t		calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
 long double	map(long double middle, long double win_size, \
 					long double min, long double max);
 

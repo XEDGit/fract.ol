@@ -12,47 +12,6 @@
 
 #include "fractol.h"
 
-long double	ft_atof(char *s)
-{
-	long double	res;
-	int			min;
-
-	res = 0;
-	min = 0;
-	if (*s == '-')
-		min = 1;
-	if (min)
-		s++;
-	atof_cycle(s, &res);
-	if (min)
-		res = -res;
-	return (res);
-}
-
-void	atof_cycle(char *s, long double *res)
-{
-	int	c;
-
-	c = 0;
-	while (*s != '.' && *s)
-	{
-		*res *= 10;
-		*res += *s - '0';
-		s++;
-	}
-	if (*s == '.')
-		s++;
-	while (*s)
-	{
-		*res *= 10;
-		*res += *s - '0';
-		c++;
-		s++;
-	}
-	while (c--)
-		*res /= 10;
-}
-
 size_t	calc_mandel(t_complex *comp, int iter, t_vars *vars)
 {
 	int			n;
@@ -95,28 +54,14 @@ size_t	calc_burning_ship(t_complex *comp, int iter, t_vars *vars)
 	return (modulo_colors(tempa + tempb, n, iter, vars));
 }
 
-void	loop(t_vars *vars)
+long double	map(long double middle, long double win_size, long double min, \
+long double max)
 {
-	static t_coords	last_zoom = {-100, -100, 0, 0};
-	int				mpos[2];
-	int				mousedown;
+	long double	first;
+	long double	second;
 
-	mousedown = mlx_is_mouse_down(vars->mlx, MLX_MOUSE_BUTTON_RIGHT);
-	if (mousedown)
-	{
-		if (vars->typeog == -1)
-			vars->typeog = vars->type;
-		vars->type = 1;
-		mlx_get_mouse_pos(vars->mlx, &mpos[0], &mpos[1]);
-		vars->xconst = map(mpos[0], vars->x_res, vars->zoom.xmin, \
-		vars->zoom.xmax);
-		vars->yconst = map(mpos[1], vars->y_res, vars->zoom.ymin, \
-		vars->zoom.ymax);
-	}
-	if (mousedown \
-	|| last_zoom.xmax != vars->zoom.xmax || last_zoom.xmin != vars->zoom.xmin \
-	|| last_zoom.ymax != vars->zoom.ymax || last_zoom.ymin != vars->zoom.ymin)
-		draw_set(vars);
-	last_zoom = vars->zoom;
-	return ;
+	first = middle / win_size;
+	second = max - min;
+	min = first * second + min;
+	return (min);
 }
