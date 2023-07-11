@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:58 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/09 13:11:14 by lmuzio        ########   odam.nl         */
+/*   Updated: 2023/07/11 13:42:33 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	loop(t_vars *vars)
 		vars->update = 1;
 	}
 	if (vars->autozoom)
-		zoom(0, 1, vars);
+		zoom(0, 2, vars);
 	if (vars->update || vars->autozoom)
 	{
 		draw_set(vars);

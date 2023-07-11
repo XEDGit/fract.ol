@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:54 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/09 00:51:13 by lmuzio        ########   odam.nl         */
+/*   Updated: 2023/07/11 13:38:53 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,20 @@ void	zoom(double xstep, double ystep, void *vvars)
 	t_vars			*vars;
 
 	vars = (t_vars *)vvars;
+	ystep /= 10;
 	mlx_get_mouse_pos(vars->mlx, &x, &y);
 	if (ystep > 0)
 	{
-		xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) / 20;
-		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) / 20;
+		xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) * ystep;
+		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) * ystep;
 		shift_zoom(vars, x, y, 0);
 	}
 	else if (ystep < 0)
 	{
-		xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) / 5;
+		xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) * 0.2;
 		if (xstep * 5 > 10)
 			return ;
-		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) / 5;
+		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) * 0.2;
 		shift_zoom(vars, x, y, 1);
 	}
 	vars->update = 1;
