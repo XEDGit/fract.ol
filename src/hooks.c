@@ -82,17 +82,17 @@ void	key(mlx_key_data_t k, void *vvars)
 {
 	t_vars		*vars;
 	int			cmd;
-	double		ratio;
 
 	cmd = 1;
 	vars = (t_vars *)vvars;
 	if (k.key == MLX_KEY_R)
 	{
-		ratio = (double)vars->y_res / vars->x_res;
 		if (vars->x_res < vars->y_res)
-			vars->zoom = (t_coords){-2, 2, -2 * ratio, 2 * ratio};
+			vars->zoom = (t_coords){-2, 2, -2 * ((double)vars->y_res / \
+				vars->x_res), 2 * ((double)vars->y_res / vars->x_res)};
 		else
-			vars->zoom = (t_coords){-2 * ratio, 2 * ratio, -2, 2};
+			vars->zoom = (t_coords){-2 * ((double)vars->x_res / \
+				vars->y_res), 2 * ((double)vars->x_res / vars->y_res), -2, 2};
 	}
 	else if (k.key == MLX_KEY_EQUAL)
 		zoom(0, 1, vars);
