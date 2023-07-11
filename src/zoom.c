@@ -22,8 +22,8 @@ void	zoom(double xstep, double ystep, void *vvars)
 	mlx_get_mouse_pos(vars->mlx, &x, &y);
 	if (ystep > 0)
 	{
-		xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) / 10;
-		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) / 10;
+		xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) / 20;
+		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) / 20;
 		shift_zoom(vars, x, y, 0);
 	}
 	else if (ystep < 0)

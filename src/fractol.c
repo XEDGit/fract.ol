@@ -71,6 +71,7 @@ void	initialize_vars(t_vars *vars)
 	vars->yconst = 0;
 	vars->typeog = -1;
 	vars->update = 0;
+	vars->multiply = 2;
 	vars->color_set = 0;
 	change_fractal(vars, MANDELBROT);
 	vars->mlx = mlx_init(vars->x_res, vars->y_res, "Fract.ol", true);
@@ -97,7 +98,9 @@ void	loop(t_vars *vars)
 		vars->zoom.ymax);
 		vars->update = 1;
 	}
-	if (vars->update)
+	if (vars->autozoom)
+		zoom(0, 1, vars);
+	if (vars->update || vars->autozoom)
 	{
 		draw_set(vars);
 		vars->update = 0;

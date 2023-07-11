@@ -26,13 +26,13 @@ NAME := fractol
 
 all: $(NAME)
 
-$(NAME): $(LIB) $(OBJ) $(HEADERS)
+$(NAME): $(LIB) $(OBJ)
 	gcc $(OBJ) $(LIB) $(LFLAGS) -o $@
 
 $(OBJ_DIR):
 	mkdir -p $@
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS) | $(OBJ_DIR)
 	$(CC) $< $(CFLAGS) -o $@
 
 $(LIB):

@@ -22,20 +22,21 @@
 # define HELP_MSG "This is a help message, to run the program \
 without displaying this do not add arguments after ./fractol\n\n\
 Commands:\n\
-\tTAB:	Change fractal displayed\n\
-\tR:	Reload original zoom\n\
-\tC:	Change color set\n\
-\tJ:	Visualize Julia's set of the current fractal\n\
-\t.:	Shift color\n\
-\t,:	Shift color backwards\n\
-\t/:	Reset color shift\n\
-\t-: 	Zoom out\n\
-\t+(=):	Zoom in\n\
-\tSCROLL:	Zoom in/out\n\
-\tRCLICK:	Visualize Julia's set at mouse coordinates\n\
-\tWASD:	Change constants of Julia's set\n\
-\tARROWS:	Move within the scene\n\
-\tESC:	Exit\n"
+\t[TAB]:		Change fractal displayed\n\
+\t[SPACE]:	Auto zoom\n\
+\t[-] [+](=):	Zoom in/out\n\
+\tSCROLL:		Zoom in/out\n\
+\t[J]:		Visualize Julia's set of the current fractal\n\
+\tRCLICK:		Visualize Julia's set at mouse coordinates\n\
+\t[W][A][S][D]:	Change constants of Julia's set\n\
+\t[R]:		Reload initial state\n\
+\t[C]:		Change color set\n\
+\t[.] [,]:	Shift color\n\
+\t[/]:		Reset color shift\n\
+\t[;] [']:	Multiply color\n\
+\t[\\]:		Reset color multiply\n\
+\t[ARROWS]:	Move within the scene\n\
+\t[ESC]:		Exit\n"
 # define ERR_MSG "Program terminated. An error occourred\n"
 # define P_SIZE 16
 # define MAX_THREADS 15
@@ -75,7 +76,9 @@ typedef struct s_vars
 	int				y_res;
 	long double		j_step;
 	int				color_set;
+	long double		multiply;
 	int				typeog;
+	int				autozoom;
 	int				update;
 }	t_vars;
 

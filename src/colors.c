@@ -24,7 +24,7 @@ size_t	interpolate(size_t col1, size_t col2, float temp)
 	r = ((unsigned char)((col2 >> 24) & 0xff) - r) * temp + r;
 	g = ((unsigned char)((col2 >> 16) & 0xff) - g) * temp + g;
 	b = ((unsigned char)((col2 >> 8) & 0xff) - b) * temp + b;
-	return ((r << 24) + (g << 16) + (b << 8) + 0xff);
+	return (((r << 24) + (g << 16) + (b << 8)) + 0xff);
 }
 
 size_t	modulo_colors(long double z, int n, int iter, t_vars *vars)
@@ -38,13 +38,14 @@ size_t	modulo_colors(long double z, int n, int iter, t_vars *vars)
 	n = (int)temp;
 	temp = temp - n;
 	if (!vars->color_set)
-		i = interpolate(map(n, iter + 1, 0x111111ff, 0x222222ff) + \
-		vars->palette[P_SIZE], map(n + 1, iter + 1, 0x111111ff, 0x222222ff) \
-		+ vars->palette[P_SIZE], temp);
+		i = interpolate(map(n, iter + 1, vars->palette[P_SIZE], \
+			vars->palette[P_SIZE] * vars->multiply), map(n + 1, \
+			iter + 1, vars->palette[P_SIZE], vars->palette[P_SIZE] \
+			* vars->multiply), temp);
 	else
 		i = interpolate(vars->palette[n % P_SIZE] + vars->palette[P_SIZE], \
 			vars->palette[(n + 1) % P_SIZE] + vars->palette[P_SIZE], temp);
-	return (((i >> 2) << 2) + 0xff);
+	return (((i >> 8) << 8) + 0xff);
 }
 
 void	generate_palette(unsigned long *palette)
@@ -65,5 +66,5 @@ void	generate_palette(unsigned long *palette)
 	palette[13] = (204 << 24) + (128 << 16) + 0xff;
 	palette[14] = (153 << 24) + (87 << 16) + 0xff;
 	palette[15] = (106 << 24) + (52 << 16) + (3 << 8) + 0xff;
-	palette[P_SIZE] = 0;
+	palette[P_SIZE] = 0x222222ff;
 }
