@@ -41,7 +41,7 @@ Commands:\n\
 # define P_SIZE 16
 # define MAX_THREADS 50
 
-typedef struct s_coords
+typedef struct s_viewport_coordinates
 {
 	long double	xmin;
 	long double	xmax;
@@ -57,11 +57,11 @@ typedef struct s_complex
 	long double	bz;
 }	t_complex;
 
-typedef struct s_vars	t_vars;
+typedef struct s_instance_variables	t_vars;
 
-typedef size_t			(*t_func)(t_complex*, int, t_vars *);
+typedef size_t						(*t_func)(t_complex*, int, t_vars *);
 
-typedef struct s_vars
+typedef struct s_instance_variables
 {
 	mlx_t			*mlx;
 	int				type;
@@ -82,7 +82,7 @@ typedef struct s_vars
 	int				update;
 }	t_vars;
 
-typedef struct s_threadvars
+typedef struct s_thread_variables
 {
 	pthread_t	thread;
 	t_complex	complex;
