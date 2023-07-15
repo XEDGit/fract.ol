@@ -40,6 +40,7 @@ Commands:\n\
 # define ERR_MSG "Program terminated. An error occourred\n"
 # define P_SIZE 16
 # define MAX_THREADS 50
+# define AUTOZOOM_FRAMES 10
 
 typedef struct s_viewport_coordinates
 {
@@ -90,7 +91,15 @@ typedef struct s_thread_variables
 	int			x;
 	int			y;
 	int			y_fract;
+	mlx_image_t	*i;
+	t_coords	zoom;
 }	t_threadvars;
+
+typedef struct s_autozoom_frame
+{
+	t_coords	zoom;
+	mlx_image_t	*i;
+}	t_azframe;
 
 enum e_fractal
 {
@@ -100,6 +109,7 @@ enum e_fractal
 };
 
 void		draw_set(t_vars *vars);
+void		*thread_main(void *vvars);
 size_t		modulo_colors(long double z, int n, int iter, t_vars *vars);
 void		generate_palette(unsigned long *palette);
 int			win_close(t_vars *vars, char *msg);
@@ -117,5 +127,9 @@ size_t		calc_mandel(t_complex *comp, int iter, t_vars *vars);
 size_t		calc_burning_ship(t_complex *comp, int iter, t_vars *vars);
 long double	map(long double middle, long double win_size, \
 					long double min, long double max);
+void		draw_autozoom_set(t_vars *vars, t_azframe *imgs);
+void		free_imgs(t_vars *vars, t_azframe *imgs);
+t_azframe	*gen_autozoom(t_vars *vars);
+void		handle_autozoom(t_vars *vars);
 
 #endif

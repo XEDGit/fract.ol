@@ -22,10 +22,10 @@ void	*thread_main(void *vvars)
 		v->x = 0;
 		while (v->x < v->vars->x_res)
 		{
-			v->complex.b = map(v->y, v->vars->y_res, v->vars->zoom.ymin, \
-				v->vars->zoom.ymax);
-			v->complex.a = map(v->x, v->vars->x_res, v->vars->zoom.xmin, \
-				v->vars->zoom.xmax);
+			v->complex.b = map(v->y, v->vars->y_res, v->zoom.ymin, \
+				v->zoom.ymax);
+			v->complex.a = map(v->x, v->vars->x_res, v->zoom.xmin, \
+				v->zoom.xmax);
 			v->complex.az = v->complex.a;
 			v->complex.bz = v->complex.b;
 			if (v->vars->type)
@@ -33,7 +33,7 @@ void	*thread_main(void *vvars)
 				v->complex.az = v->vars->xconst;
 				v->complex.bz = v->vars->yconst;
 			}
-			mlx_put_pixel(v->vars->i, v->x++, v->y, v->vars->func(&v->complex, \
+			mlx_put_pixel(v->i, v->x++, v->y, v->vars->func(&v->complex, \
 					v->vars->iters, v->vars));
 		}
 		v->y++;
@@ -53,14 +53,14 @@ void	draw_set(t_vars *vars)
 	{
 		tvars[nthreads] = (t_threadvars){
 			0, {0}, vars, 0, y_res_thread * nthreads, \
-			y_res_thread * (nthreads + 1)
+			y_res_thread * (nthreads + 1), vars->i, vars->zoom
 		};
 		pthread_create(&tvars[nthreads].thread, 0, \
 			&thread_main, &tvars[nthreads]);
 		nthreads++;
 	}
-	tvars[nthreads] = (t_threadvars){
-		0, {0}, vars, 0, tvars[nthreads - 1].y_fract, vars->y_res
+	tvars[nthreads] = (t_threadvars){0, {0}, vars, 0, \
+		tvars[nthreads - 1].y_fract, vars->y_res, vars->i, vars->zoom
 	};
 	if (tvars[nthreads].y < vars->y_res)
 		pthread_create(&tvars[nthreads].thread, 0, \
@@ -91,8 +91,8 @@ void	initialize_vars(t_vars *vars)
 
 void	loop(t_vars *vars)
 {
-	int				mpos[2];
-	int				mousedown;
+	int					mpos[2];
+	int					mousedown;
 
 	mousedown = mlx_is_mouse_down(vars->mlx, MLX_MOUSE_BUTTON_RIGHT);
 	if (mousedown)
@@ -107,9 +107,8 @@ void	loop(t_vars *vars)
 		vars->zoom.ymax);
 		vars->update = 1;
 	}
-	if (vars->autozoom)
-		zoom(0, 2, vars);
-	if (vars->update || vars->autozoom)
+	handle_autozoom(vars);
+	if (vars->update)
 	{
 		draw_set(vars);
 		vars->update = 0;
