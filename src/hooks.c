@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:54 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/10 12:33:21 by lmuzio        ########   odam.nl         */
+/*   Updated: 2023/07/15 02:43:44 by lmuzio        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,11 @@ void	mouse(mouse_key_t button, action_t action, modifier_key_t mods, \
 	{
 		vars->type = vars->typeog;
 		vars->typeog = -1;
+	}
+	else if (button == MLX_MOUSE_BUTTON_LEFT && action == MLX_PRESS)
+	{
+		if (vars->autozoom++)
+			vars->autozoom = 0;
 	}
 	else
 		cmd = 0;
