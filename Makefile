@@ -1,22 +1,32 @@
-SRC_DIR := src
-
-OBJ_DIR := obj
-
 FILES :=  fractol.c calcs.c utils.c zoom.c colors.c hooks.c
 
 HEADERS := includes/fractol.h
 
-SRC := $(addprefix $(SRC_DIR)/, $(FILES))
+SRC_DIR := src
 
-OBJ := $(addprefix $(OBJ_DIR)/, $(FILES:.c=.o))
+OBJ_DIR := obj
 
-LIB := build/libmlx42.a
+MLX := build/libmlx42.a
 
 INC := -Iincludes -IMLX42/include
 
-CFLAGS := -Wall -Wextra -Werror $(INC) -c -flto -O3
+OPT := -flto -O3
 
-LFLAGS := -L "/Users/$(USER)/.brew/lib" -lglfw -framework Cocoa -framework OpenGL $(INC) -framework IOKit -flto -O3
+DEBUG := #-g3 -fsanitize=address
+
+ifeq ($(shell uname -s),Linux)
+	LIBFLAGS := -ldl -lglfw -pthread -lm
+else
+	LIBFLAGS := -L "/Users/$(USER)/.brew/lib" -lglfw -framework Cocoa -framework OpenGL -framework IOKit
+endif
+
+CFLAGS := $(INC) $(DEBUG) -Wall -Wextra -Werror -c $(OPT)
+
+LFLAGS := $(INC) $(LIBFLAGS) $(DEBUG) $(OPT)
+
+SRC := $(addprefix $(SRC_DIR)/, $(FILES))
+
+OBJ := $(addprefix $(OBJ_DIR)/, $(FILES:.c=.o))
 
 GREEN := \033[32m
 
@@ -26,8 +36,8 @@ NAME := fractol
 
 all: $(NAME)
 
-$(NAME): $(LIB) $(OBJ)
-	gcc $(OBJ) $(LIB) $(LFLAGS) -o $@
+$(NAME): $(MLX) $(OBJ)
+	gcc $(OBJ) $(MLX) $(LFLAGS) -o $@
 
 $(OBJ_DIR):
 	mkdir -p $@
@@ -35,7 +45,7 @@ $(OBJ_DIR):
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS) | $(OBJ_DIR)
 	$(CC) $< $(CFLAGS) -o $@
 
-$(LIB):
+$(MLX):
 	cmake -S MLX42 -B build
 	cmake --build build -j4
 
@@ -46,11 +56,5 @@ fclean:
 
 re: fclean all
 
-l: LFLAGS = -flto -O3 $(INC) -ldl -lglfw -pthread -lm
-l: all
-
-rel: LFLAGS = -flto -O3 $(INC) -ldl -lglfw -pthread -lm
-rel: fclean all
-
 mem:
-	memdetect $(SRC) $(LIB) $(LFLAGS) $(1)
+	memdetect $(SRC) $(MLX) $(LFLAGS) $(1)

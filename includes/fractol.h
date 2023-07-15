@@ -39,7 +39,7 @@ Commands:\n\
 \t[ESC]:		Exit\n"
 # define ERR_MSG "Program terminated. An error occourred\n"
 # define P_SIZE 16
-# define MAX_THREADS 15
+# define MAX_THREADS 50
 
 typedef struct s_coords
 {

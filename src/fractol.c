@@ -43,20 +43,29 @@ void	*thread_main(void *vvars)
 
 void	draw_set(t_vars *vars)
 {
-	t_threadvars	tvars[MAX_THREADS];
+	t_threadvars	tvars[MAX_THREADS + 1];
 	int				nthreads;
+	int				y_res_thread;
 
+	y_res_thread = vars->y_res / MAX_THREADS;
 	nthreads = 0;
 	while (nthreads < MAX_THREADS)
 	{
 		tvars[nthreads] = (t_threadvars){
-			0, {0}, vars, 0, (vars->y_res / MAX_THREADS) * nthreads, \
-			(vars->y_res / MAX_THREADS) * (nthreads + 1)
+			0, {0}, vars, 0, y_res_thread * nthreads, \
+			y_res_thread * (nthreads + 1)
 		};
 		pthread_create(&tvars[nthreads].thread, 0, \
 			&thread_main, &tvars[nthreads]);
 		nthreads++;
 	}
+	tvars[nthreads] = (t_threadvars){
+		0, {0}, vars, 0, tvars[nthreads - 1].y_fract, vars->y_res
+	};
+	if (tvars[nthreads].y < vars->y_res)
+		pthread_create(&tvars[nthreads].thread, 0, \
+				&thread_main, &tvars[nthreads]);
+	nthreads++;
 	while (nthreads--)
 		pthread_join(tvars[nthreads].thread, 0);
 }
