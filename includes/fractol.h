@@ -18,6 +18,7 @@
 # include <unistd.h>
 # include <math.h>
 # include <pthread.h>
+# include <stdbool.h>
 
 # define HELP_MSG "This is a help message, to run the program \
 without displaying this do not add arguments after ./fractol\n\n\
@@ -61,25 +62,32 @@ typedef struct s_instance_variables	t_vars;
 
 typedef size_t						(*t_func)(t_complex*, int, t_vars *);
 
+typedef union u_color
+{
+	unsigned int	value;
+	unsigned char	rgba[4];
+}	t_color;
+
 typedef struct s_instance_variables
 {
 	mlx_t			*mlx;
-	int				type;
+	mlx_image_t		*i;
+	bool			type;
 	t_func			func;
 	t_coords		zoom;
-	mlx_image_t		*i;
-	unsigned long	palette[P_SIZE + 1];
+	t_color			color;
+	unsigned int	palette[P_SIZE];
 	long double		xconst;
 	long double		yconst;
 	int				iters;
 	int				x_res;
 	int				y_res;
 	long double		j_step;
-	int				color_set;
+	unsigned int	color_set;
 	long double		multiply;
 	int				typeog;
-	int				autozoom;
-	int				update;
+	bool			autozoom;
+	bool			update;
 }	t_vars;
 
 typedef struct s_thread_variables
@@ -100,8 +108,8 @@ enum e_fractal
 };
 
 void		draw_set(t_vars *vars);
-size_t		modulo_colors(long double z, int n, int iter, t_vars *vars);
-void		generate_palette(unsigned long *palette);
+int			modulo_colors(long double z, int n, int iter, t_vars *vars);
+void		generate_palette(unsigned int *palette);
 int			win_close(t_vars *vars, char *msg);
 void		key(mlx_key_data_t keydata, void *vvars);
 void		zoom(double xstep, double ystep, void *vvars);
@@ -110,6 +118,7 @@ void		mouse(mouse_key_t button, action_t action, \
 				modifier_key_t mods, void *vvars);
 void		print(const char *s);
 void		change_fractal(t_vars *vars, int type);
+void		reset_zoom(t_vars *vars);
 void		shift_zoom(t_vars *vars, int x, int y, int direction);
 int			shift_view(int key, t_vars *vars, long double xstep, \
 					long double ystep);

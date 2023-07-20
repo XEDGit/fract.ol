@@ -51,10 +51,15 @@ void	change_fractal(t_vars *vars, int type)
 			type = 0;
 	}
 	vars->func = algos[type];
-	if (type == 1)
-	{
-		vars->yconst = -1.762;
-		vars->xconst = 0.028;
-	}
 	current = type;
+}
+
+void	reset_zoom(t_vars *vars)
+{
+	if (vars->x_res < vars->y_res)
+		vars->zoom = (t_coords){-2, 2, -2 * ((double)vars->y_res / \
+			vars->x_res), 2 * ((double)vars->y_res / vars->x_res)};
+	else
+		vars->zoom = (t_coords){-2 * ((double)vars->x_res / \
+			vars->y_res), 2 * ((double)vars->x_res / vars->y_res), -2, 2};
 }

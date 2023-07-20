@@ -12,43 +12,61 @@
 
 #include "fractol.h"
 
-size_t	interpolate(size_t col1, size_t col2, float temp)
+int	interpolate(t_color col1, t_color col2, float temp)
 {
-	unsigned char	r;
-	unsigned char	g;
-	unsigned char	b;
+	t_color	res;
 
-	r = (col1 >> 24) & 0xff;
-	g = (col1 >> 16) & 0xff;
-	b = (col1 >> 8) & 0xff;
-	r = ((unsigned char)((col2 >> 24) & 0xff) - r) * temp + r;
-	g = ((unsigned char)((col2 >> 16) & 0xff) - g) * temp + g;
-	b = ((unsigned char)((col2 >> 8) & 0xff) - b) * temp + b;
-	return (((r << 24) + (g << 16) + (b << 8)) + 0xff);
+	res.rgba[3] = col1.rgba[3];
+	res.rgba[2] = col1.rgba[2];
+	res.rgba[1] = col1.rgba[1];
+	res.rgba[3] = (col2.rgba[3] - res.rgba[3]) * temp + res.rgba[3];
+	res.rgba[2] = (col2.rgba[2] - res.rgba[2]) * temp + res.rgba[2];
+	res.rgba[1] = (col2.rgba[1] - res.rgba[1]) * temp + res.rgba[1];
+	res.rgba[0] = 0xff;
+	return (res.value);
 }
 
-size_t	modulo_colors(long double z, int n, int iter, t_vars *vars)
+int	color_mode(t_vars *vars, int n, int iter, float temp)
 {
-	float			temp;
-	unsigned long	i;
+	if (!vars->color_set)
+		return (interpolate((t_color){map(n, iter + 1, vars->color.value, \
+			vars->color.value * vars->multiply)}, (t_color){map(n + 1, \
+			iter + 1, vars->color.value, vars->color.value \
+			* vars->multiply)}, temp));
+	else if (vars->color_set == 1)
+		return (interpolate((t_color){vars->palette[n % P_SIZE] + \
+		vars->color.value}, (t_color){vars->palette[(n + 1) % P_SIZE] + \
+		vars->color.value}, temp));
+	else if (vars->color_set == 2)
+		return (interpolate((t_color){((vars->color.rgba[3] * n) << 24) + \
+		((vars->color.rgba[2] * n) << 16) + ((vars->color.rgba[1] * n) << 8)}, \
+		(t_color){((vars->color.rgba[3] * (n + 1)) << 24) + \
+		((vars->color.rgba[2] * (n + 1)) << 16) + ((vars->color.rgba[1] * \
+		(n + 1)) << 8)}, temp));
+	else
+		return (interpolate((t_color){((vars->color.rgba[3] + n) << 24) \
+		+ ((vars->color.rgba[2] + n) << 16) + ((vars->color.rgba[1] + n) << 8) \
+		}, (t_color){((vars->color.rgba[3] + (n + 1)) << 24) + \
+		((vars->color.rgba[2] + (n + 1)) << 16) + ((vars->color.rgba[1] + \
+		(n + 1)) << 8)}, temp));
+}
+
+int	modulo_colors(long double z, int n, int iter, t_vars *vars)
+{
+	float	temp;
+	t_color	i;
 
 	if (n == iter)
 		return (0xff);
 	temp = n + 2 - log(log(z)) / .693147;
 	n = (int)temp;
 	temp = temp - n;
-	if (!vars->color_set)
-		i = interpolate(map(n, iter + 1, vars->palette[P_SIZE], \
-			vars->palette[P_SIZE] * vars->multiply), map(n + 1, \
-			iter + 1, vars->palette[P_SIZE], vars->palette[P_SIZE] \
-			* vars->multiply), temp);
-	else
-		i = interpolate(vars->palette[n % P_SIZE] + vars->palette[P_SIZE], \
-			vars->palette[(n + 1) % P_SIZE] + vars->palette[P_SIZE], temp);
-	return (((i >> 8) << 8) + 0xff);
+	i.value = color_mode(vars, n, iter, temp);
+	i.rgba[0] = 0xff;
+	return (i.value);
 }
 
-void	generate_palette(unsigned long *palette)
+void	generate_palette(unsigned int *palette)
 {
 	palette[0] = (66 << 24) + (30 << 16) + (15 << 8) + 0xff;
 	palette[1] = (25 << 24) + (7 << 16) + (26 << 8) + 0xff;
@@ -66,5 +84,4 @@ void	generate_palette(unsigned long *palette)
 	palette[13] = (204 << 24) + (128 << 16) + 0xff;
 	palette[14] = (153 << 24) + (87 << 16) + 0xff;
 	palette[15] = (106 << 24) + (52 << 16) + (3 << 8) + 0xff;
-	palette[P_SIZE] = 0x222222ff;
 }

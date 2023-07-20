@@ -79,9 +79,10 @@ void	initialize_vars(t_vars *vars)
 	vars->xconst = 0;
 	vars->yconst = 0;
 	vars->typeog = -1;
-	vars->update = 0;
+	vars->update = true;
 	vars->multiply = 2;
 	vars->color_set = 0;
+	vars->color.value = 0x11111100;
 	change_fractal(vars, MANDELBROT);
 	vars->mlx = mlx_init(vars->x_res, vars->y_res, "Fract.ol", true);
 	vars->i = mlx_new_image(vars->mlx, vars->x_res, vars->y_res);
@@ -105,14 +106,14 @@ void	loop(t_vars *vars)
 		vars->zoom.xmax);
 		vars->yconst = map(mpos[1], vars->y_res, vars->zoom.ymin, \
 		vars->zoom.ymax);
-		vars->update = 1;
+		vars->update = true;
 	}
 	if (vars->autozoom)
 		zoom(0, 2, vars);
 	if (vars->update || vars->autozoom)
 	{
 		draw_set(vars);
-		vars->update = 0;
+		vars->update = false;
 	}
 	return ;
 }
@@ -135,7 +136,7 @@ int	main(int argc, char **argv)
 	mlx_resize_hook(vars.mlx, &resize, &vars);
 	mlx_mouse_hook(vars.mlx, mouse, &vars);
 	mlx_loop_hook(vars.mlx, (void (*)(void *))loop, &vars);
-	key((mlx_key_data_t){MLX_KEY_R, MLX_PRESS, 0, 0}, &vars);
+	reset_zoom(&vars);
 	mlx_image_to_window(vars.mlx, vars.i, 0, 0);
 	mlx_loop(vars.mlx);
 	mlx_terminate(vars.mlx);
