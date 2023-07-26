@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:58 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/11 13:42:33 by lmuzio        ########   odam.nl         */
+/*   Updated: 2023/07/26 17:23:00 by XEDGit        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,8 @@ void	initialize_vars(t_vars *vars)
 void	loop(t_vars *vars)
 {
 	int				mpos[2];
-	int				mousedown;
 
-	mousedown = mlx_is_mouse_down(vars->mlx, MLX_MOUSE_BUTTON_RIGHT);
-	if (mousedown)
+	if (mlx_is_mouse_down(vars->mlx, MLX_MOUSE_BUTTON_RIGHT))
 	{
 		if (vars->typeog == -1)
 			vars->typeog = vars->type;

@@ -6,7 +6,7 @@
 /*   By: lmuzio <lmuzio@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 18:00:54 by lmuzio        #+#    #+#                 */
-/*   Updated: 2023/07/11 13:38:53 by lmuzio        ########   odam.nl         */
+/*   Updated: 2023/07/26 17:20:03 by XEDGit        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,9 @@ void	zoom(double xstep, double ystep, void *vvars)
 		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) * 0.2;
 		shift_zoom(vars, x, y, 1);
 	}
-	vars->update = false;
+	else
+		return ;
+	vars->update = true;
 }
 
 void	shift_zoom(t_vars *vars, int x, int y, int direction)
