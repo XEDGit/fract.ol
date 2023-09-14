@@ -40,8 +40,8 @@ Commands:\n\
 \t[ESC]:		Exit\n"
 # define ERR_MSG "Program terminated. An error occourred\n"
 # define P_SIZE 16
-# define MAX_THREADS 16
-# define TASK_SIZE 20
+# define MAX_THREADS 50
+# define TASK_SIZE 2
 
 typedef struct s_viewport_coordinates
 {
@@ -87,6 +87,7 @@ typedef struct s_instance_variables
 	int				*tasks;
 	int				tasks_index;
 	pthread_mutex_t	task_lock;
+	pthread_cond_t	task_cond;
 	bool			running;
 	t_threadvars	threads[MAX_THREADS + 1];
 	bool			type;

@@ -16,18 +16,13 @@ int	get_task(t_threadvars *v)
 {
 	int	ret;
 
-	while (1)
+	pthread_mutex_lock(&v->vars->task_lock);
+	while (v->vars->tasks_index * TASK_SIZE + TASK_SIZE > v->vars->y_res)
+		pthread_cond_wait(&v->vars->task_cond, &v->vars->task_lock);
+	if (!v->vars->running)
 	{
-		pthread_mutex_lock(&v->vars->task_lock);
-		if (!v->vars->running)
-		{
-			pthread_mutex_unlock(&v->vars->task_lock);
-			pthread_exit(0);
-		}
-		if (v->vars->tasks_index * TASK_SIZE + TASK_SIZE <= v->vars->y_res)
-			break ;
 		pthread_mutex_unlock(&v->vars->task_lock);
-		usleep(17000);
+		pthread_exit(0);
 	}
 	ret = v->vars->tasks[v->vars->tasks_index++];
 	pthread_mutex_unlock(&v->vars->task_lock);
@@ -75,6 +70,7 @@ void	draw_set(t_vars *vars)
 	static int			nthreads = 0;
 	int					i;
 
+	pthread_mutex_lock(&vars->task_lock);
 	vars->tasks_index = 0;
 	i = 0;
 	while (i * TASK_SIZE + TASK_SIZE <= vars->y_res)
@@ -82,6 +78,8 @@ void	draw_set(t_vars *vars)
 		vars->tasks[i] = i * TASK_SIZE;
 		i++;
 	}
+	pthread_mutex_unlock(&vars->task_lock);
+	pthread_cond_broadcast(&vars->task_cond);
 	if (nthreads == 0)
 	{
 		vars->running = 1;
@@ -93,11 +91,15 @@ void	draw_set(t_vars *vars)
 			nthreads++;
 		}
 	}
-	while (vars->tasks_index * TASK_SIZE + TASK_SIZE < vars->y_res)
+	while (1)
 	{
+		// pthread_mutex_lock(&vars->task_lock);
+		if (vars->tasks_index * TASK_SIZE + TASK_SIZE > vars->y_res)
+			break ;
+		// pthread_mutex_unlock(&vars->task_lock);
 		usleep(17000);
-		continue ;
 	}
+	pthread_mutex_unlock(&vars->task_lock);
 }
 
 void	initialize_vars(t_vars *vars)
@@ -116,6 +118,7 @@ void	initialize_vars(t_vars *vars)
 	vars->running = true;
 	vars->tasks_index = vars->y_res;
 	pthread_mutex_init(&vars->task_lock, 0);
+	pthread_cond_init(&vars->task_cond, 0);
 	change_fractal(vars, MANDELBROT);
 	vars->mlx = mlx_init(vars->x_res, vars->y_res, "Fract.ol", true);
 	vars->i = mlx_new_image(vars->mlx, vars->x_res, vars->y_res);
@@ -143,8 +146,10 @@ void	loop(t_vars *vars)
 		zoom(0, 2, vars);
 	if (vars->update || vars->autozoom)
 	{
+				// float time = (float)clock() / CLOCKS_PER_SEC;
 		vars->update = false;
 		draw_set(vars);
+				// printf("frame: %lf clocks\n", ((float)clock() / CLOCKS_PER_SEC - time) / MAX_THREADS);
 	}
 	return ;
 }

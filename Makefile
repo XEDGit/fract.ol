@@ -54,7 +54,7 @@ fclean:
 
 re: fclean all
 
-d: DEBUG = -g3 -fsanitize=address
+d: DEBUG = -g3 -fsanitize=thread
 d: $(1)
 
 s: DEBUG = -g3
