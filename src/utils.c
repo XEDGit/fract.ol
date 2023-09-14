@@ -27,10 +27,27 @@ void	print(const char *s)
 
 int	win_close(t_vars *vars, char *msg)
 {
-	if (vars && vars->mlx)
+	int	i;
+
+	if (vars)
 	{
-		mlx_close_window(vars->mlx);
-		mlx_terminate(vars->mlx);
+		if (vars->running == 1)
+		{
+			pthread_mutex_lock(&vars->task_lock);
+			vars->tasks_index = 0;
+			vars->running = 0;
+			pthread_mutex_unlock(&vars->task_lock);
+			i = -1;
+			while (++i < MAX_THREADS)
+				pthread_join(vars->threads[i].thread, 0);
+		}
+		pthread_mutex_destroy(&vars->task_lock);
+		free(vars->tasks);
+		if (vars->mlx)
+		{
+			mlx_close_window(vars->mlx);
+			mlx_terminate(vars->mlx);
+		}
 	}
 	print(msg);
 	exit(0);

@@ -12,62 +12,92 @@
 
 #include "fractol.h"
 
+int	get_task(t_threadvars *v)
+{
+	int	ret;
+
+	while (1)
+	{
+		pthread_mutex_lock(&v->vars->task_lock);
+		if (!v->vars->running)
+		{
+			pthread_mutex_unlock(&v->vars->task_lock);
+			pthread_exit(0);
+		}
+		if (v->vars->tasks_index * TASK_SIZE + TASK_SIZE <= v->vars->y_res)
+			break ;
+		pthread_mutex_unlock(&v->vars->task_lock);
+		usleep(17000);
+	}
+	ret = v->vars->tasks[v->vars->tasks_index++];
+	pthread_mutex_unlock(&v->vars->task_lock);
+	return (ret);
+}
+
 void	*thread_main(void *vvars)
 {
 	t_threadvars	*v;
+	int				i;
 
 	v = (t_threadvars *)vvars;
-	while (v->y < v->y_fract)
+	while (v->vars->running)
 	{
-		v->x = 0;
-		while (v->x < v->vars->x_res)
+		v->y = get_task(v);
+		i = 0;
+		while (i < TASK_SIZE)
 		{
-			v->complex.b = map(v->y, v->vars->y_res, v->vars->zoom.ymin, \
-				v->vars->zoom.ymax);
-			v->complex.a = map(v->x, v->vars->x_res, v->vars->zoom.xmin, \
-				v->vars->zoom.xmax);
-			v->complex.az = v->complex.a;
-			v->complex.bz = v->complex.b;
-			if (v->vars->type)
+			v->x = 0;
+			while (v->x < v->vars->x_res)
 			{
-				v->complex.az = v->vars->xconst;
-				v->complex.bz = v->vars->yconst;
+				v->complex.b = map(v->y, v->vars->y_res, v->vars->zoom.ymin, \
+					v->vars->zoom.ymax);
+				v->complex.a = map(v->x, v->vars->x_res, v->vars->zoom.xmin, \
+					v->vars->zoom.xmax);
+				v->complex.az = v->complex.a;
+				v->complex.bz = v->complex.b;
+				if (v->vars->type)
+				{
+					v->complex.az = v->vars->xconst;
+					v->complex.bz = v->vars->yconst;
+				}
+				mlx_put_pixel(v->vars->i, v->x++, v->y, v->vars->func(&v->complex, \
+						v->vars->iters, v->vars));
 			}
-			mlx_put_pixel(v->vars->i, v->x++, v->y, v->vars->func(&v->complex, \
-					v->vars->iters, v->vars));
+			i++;
+			v->y++;
 		}
-		v->y++;
 	}
 	pthread_exit(0);
 }
 
 void	draw_set(t_vars *vars)
 {
-	t_threadvars	tvars[MAX_THREADS + 1];
-	int				nthreads;
-	int				y_res_thread;
+	static int			nthreads = 0;
+	int					i;
 
-	y_res_thread = vars->y_res / MAX_THREADS;
-	nthreads = 0;
-	while (nthreads < MAX_THREADS)
+	vars->tasks_index = 0;
+	i = 0;
+	while (i * TASK_SIZE + TASK_SIZE <= vars->y_res)
 	{
-		tvars[nthreads] = (t_threadvars){
-			0, {0}, vars, 0, y_res_thread * nthreads, \
-			y_res_thread * (nthreads + 1)
-		};
-		pthread_create(&tvars[nthreads].thread, 0, \
-			&thread_main, &tvars[nthreads]);
-		nthreads++;
+		vars->tasks[i] = i * TASK_SIZE;
+		i++;
 	}
-	tvars[nthreads] = (t_threadvars){
-		0, {0}, vars, 0, tvars[nthreads - 1].y_fract, vars->y_res
-	};
-	if (tvars[nthreads].y < vars->y_res)
-		pthread_create(&tvars[nthreads].thread, 0, \
-				&thread_main, &tvars[nthreads]);
-	nthreads++;
-	while (nthreads--)
-		pthread_join(tvars[nthreads].thread, 0);
+	if (nthreads == 0)
+	{
+		vars->running = 1;
+		while (nthreads < MAX_THREADS)
+		{
+			vars->threads[nthreads].vars = vars;
+			pthread_create(&vars->threads[nthreads].thread, 0, \
+				&thread_main, &vars->threads[nthreads]);
+			nthreads++;
+		}
+	}
+	while (vars->tasks_index * TASK_SIZE + TASK_SIZE < vars->y_res)
+	{
+		usleep(17000);
+		continue ;
+	}
 }
 
 void	initialize_vars(t_vars *vars)
@@ -83,6 +113,9 @@ void	initialize_vars(t_vars *vars)
 	vars->multiply = 2;
 	vars->color_set = 0;
 	vars->color.value = 0x11111100;
+	vars->running = true;
+	vars->tasks_index = vars->y_res;
+	pthread_mutex_init(&vars->task_lock, 0);
 	change_fractal(vars, MANDELBROT);
 	vars->mlx = mlx_init(vars->x_res, vars->y_res, "Fract.ol", true);
 	vars->i = mlx_new_image(vars->mlx, vars->x_res, vars->y_res);
@@ -110,8 +143,8 @@ void	loop(t_vars *vars)
 		zoom(0, 2, vars);
 	if (vars->update || vars->autozoom)
 	{
-		draw_set(vars);
 		vars->update = false;
+		draw_set(vars);
 	}
 	return ;
 }
@@ -128,6 +161,7 @@ int	main(int argc, char **argv)
 	(void)argv;
 	vars = (t_vars){0};
 	initialize_vars(&vars);
+	vars.tasks = malloc((vars.y_res / TASK_SIZE) * sizeof(int));
 	generate_palette(vars.palette);
 	mlx_key_hook(vars.mlx, &key, &vars);
 	mlx_scroll_hook(vars.mlx, &zoom, &vars);

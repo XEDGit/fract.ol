@@ -15,10 +15,24 @@
 void	resize(int width, int height, void *vvars)
 {
 	t_vars		*vars;
+	int			*new_tasks;
+	int			i;
 
 	vars = (t_vars *)vvars;
+	new_tasks = malloc((height / TASK_SIZE) * sizeof(int));
+	i = 0;
+	while (i * TASK_SIZE + TASK_SIZE <= height)
+	{
+		new_tasks[i] = i * TASK_SIZE;
+		i++;
+	}
+	pthread_mutex_lock(&vars->task_lock);
 	vars->x_res = width;
 	vars->y_res = height;
+	free(vars->tasks);
+	vars->tasks = new_tasks;
+	vars->tasks_index = 0;
+	pthread_mutex_unlock(&vars->task_lock);
 	mlx_resize_image(vars->i, width, height);
 	reset_zoom(vars);
 }
