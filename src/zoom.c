@@ -21,23 +21,26 @@ void	zoom(double xstep, double ystep, void *vvars)
 	vars = (t_vars *)vvars;
 	ystep /= 10;
 	mlx_get_mouse_pos(vars->mlx, &x, &y);
+	pthread_mutex_lock(&vars->task_end);
 	if (ystep > 0)
 	{
 		xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) * ystep;
 		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) * ystep;
-		shift_zoom(vars, x, y, 0);
+		shift_zoom(vars, BENCH_ZOOM_COORDINATES, 0);
 	}
 	else if (ystep < 0)
 	{
 		xstep = fabsl(vars->zoom.xmax - vars->zoom.xmin) * 0.2;
-		if (xstep * 5 > 10)
-			return ;
-		ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) * 0.2;
-		shift_zoom(vars, x, y, 1);
+		if (xstep * 5 < 10)
+		{
+			ystep = fabsl(vars->zoom.ymax - vars->zoom.ymin) * 0.2;
+			shift_zoom(vars, x, y, 1);
+		}
 	}
 	else
 		return ;
 	vars->update = true;
+	pthread_mutex_unlock(&vars->task_end);
 }
 
 void	shift_zoom(t_vars *vars, int x, int y, int direction)

@@ -39,8 +39,11 @@ int	win_close(t_vars *vars, char *msg)
 			pthread_mutex_unlock(&vars->task_lock);
 			pthread_cond_broadcast(&vars->task_cond);
 			i = -1;
-			while (++i < MAX_THREADS)
+			while (++i < NTHREADS)
+			{
 				pthread_join(vars->threads[i].thread, 0);
+				pthread_mutex_destroy(&vars->threads[i].mutex);
+			}
 		}
 		pthread_mutex_destroy(&vars->task_lock);
 		pthread_cond_destroy(&vars->task_cond);

@@ -32,8 +32,8 @@ void	resize(int width, int height, void *vvars)
 	free(vars->tasks);
 	vars->tasks = new_tasks;
 	vars->tasks_index = 0;
-	pthread_mutex_unlock(&vars->task_lock);
 	mlx_resize_image(vars->i, width, height);
+	pthread_mutex_unlock(&vars->task_lock);
 	reset_zoom(vars);
 }
 
@@ -93,14 +93,19 @@ void	key(mlx_key_data_t k, void *vvars)
 	t_vars		*vars;
 	int			cmd;
 
-	cmd = 1;
+	cmd = 0;
 	vars = (t_vars *)vvars;
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT_CONTROL) && k.key == MLX_KEY_R)
-		reset_zoom(vars);
-	else if (k.key == MLX_KEY_EQUAL)
+	if (k.key == MLX_KEY_EQUAL)
 		zoom(0, 1, vars);
 	else if (k.key == MLX_KEY_MINUS)
 		zoom(0, -1, vars);
+	else
+		cmd = 1;
+	if (!cmd)
+		return ;
+	pthread_mutex_lock(&vars->task_end);
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT_CONTROL) && k.key == MLX_KEY_R)
+		reset_zoom(vars);
 	else if (k.key == MLX_KEY_SLASH)
 		vars->color.value = 0x11111100;
 	else if (k.key == MLX_KEY_ESCAPE)
@@ -108,6 +113,7 @@ void	key(mlx_key_data_t k, void *vvars)
 	else
 		key2(k, vars, &cmd);
 	vars->update = cmd;
+	pthread_mutex_unlock(&vars->task_end);
 }
 
 void	mouse(mouse_key_t button, action_t action, modifier_key_t mods, \
@@ -118,6 +124,7 @@ void	mouse(mouse_key_t button, action_t action, modifier_key_t mods, \
 
 	cmd = 1;
 	vars = (t_vars *)vvars;
+	pthread_mutex_lock(&vars->task_end);
 	(void)mods;
 	if (button == MLX_MOUSE_BUTTON_RIGHT && action == MLX_RELEASE)
 	{
@@ -129,4 +136,5 @@ void	mouse(mouse_key_t button, action_t action, modifier_key_t mods, \
 	else
 		cmd = 0;
 	vars->update = cmd;
+	pthread_mutex_unlock(&vars->task_end);
 }

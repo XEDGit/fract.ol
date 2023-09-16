@@ -60,5 +60,11 @@ d: $(1)
 s: DEBUG = -g3
 s: $(1)
 
+bench: DEBUG = -D BENCH
+bench: $(1)
+
+bench_auto: DEBUG = -D BENCH_AUTO
+bench_auto: $(1)
+
 mem:
 	memdetect $(SRC) $(MLX) $(LFLAGS) $(1)

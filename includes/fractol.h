@@ -40,9 +40,24 @@ Commands:\n\
 \t[ESC]:		Exit\n"
 # define ERR_MSG "Program terminated. An error occourred\n"
 # define P_SIZE 16
-# define MAX_THREADS 50
+# define NTHREADS 20
 # define TASK_SIZE 2
-
+#ifdef BENCH_AUTO
+# define BENCH_START static int limit = 0; if (limit++ == 250) win_close(vars, ""); struct timespec start, end; clock_gettime(CLOCK_REALTIME, &start);
+# define BENCH_END clock_gettime(CLOCK_REALTIME, &end); printf("%lf\n", ((end.tv_sec * 1e9 + end.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec)) / 1000000000);
+# define BENCH_AUTOZOOM 1
+# define BENCH_ZOOM_COORDINATES 143, 520
+#elif defined BENCH
+# define BENCH_START struct timespec start, end; clock_gettime(CLOCK_REALTIME, &start);
+# define BENCH_END clock_gettime(CLOCK_REALTIME, &end); printf("%lf\n", ((end.tv_sec * 1e9 + end.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec)) / 1000000000);
+# define BENCH_AUTOZOOM 0
+# define BENCH_ZOOM_COORDINATES x, y
+#else
+# define BENCH_START
+# define BENCH_END
+# define BENCH_AUTOZOOM 0
+# define BENCH_ZOOM_COORDINATES x, y
+#endif
 typedef struct s_viewport_coordinates
 {
 	long double	xmin;
@@ -74,6 +89,7 @@ struct								s_instance_variables;
 typedef struct s_thread_variables
 {
 	pthread_t						thread;
+	pthread_mutex_t					mutex;
 	t_complex						complex;
 	struct s_instance_variables		*vars;
 	int								x;
@@ -87,9 +103,10 @@ typedef struct s_instance_variables
 	int				*tasks;
 	int				tasks_index;
 	pthread_mutex_t	task_lock;
+	pthread_mutex_t	task_end;
 	pthread_cond_t	task_cond;
 	bool			running;
-	t_threadvars	threads[MAX_THREADS + 1];
+	t_threadvars	threads[NTHREADS + 1];
 	bool			type;
 	t_func			func;
 	t_coords		zoom;
