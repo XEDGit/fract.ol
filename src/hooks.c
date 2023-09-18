@@ -14,27 +14,33 @@
 
 void	resize(int width, int height, void *vvars)
 {
-	t_vars		*vars;
-	int			*new_tasks;
-	int			i;
+	t_vars	*vars;
+	t_task	*new_tasks;
+	int		i;
 
 	vars = (t_vars *)vvars;
-	new_tasks = malloc((height / TASK_SIZE) * sizeof(int));
-	i = 0;
-	while (i * TASK_SIZE + TASK_SIZE <= height)
+	new_tasks = malloc((height / TASK_SIZE) * sizeof(t_task) * 2);
+	if (!new_tasks)
 	{
-		new_tasks[i] = i * TASK_SIZE;
+		vars->running = 0;
+		print("Failed allocating space for task queue");
+		return ;
+	}
+	i = 0;
+	while (vars->tasks[i].starty != -1)
+	{
+		new_tasks[i] = vars->tasks[i];
 		i++;
 	}
-	pthread_mutex_lock(&vars->task_lock);
+	pthread_mutex_lock(&vars->task_end);
 	vars->x_res = width;
 	vars->y_res = height;
 	free(vars->tasks);
 	vars->tasks = new_tasks;
 	vars->tasks_index = 0;
 	mlx_resize_image(vars->i, width, height);
-	pthread_mutex_unlock(&vars->task_lock);
 	reset_zoom(vars);
+	pthread_mutex_unlock(&vars->task_end);
 }
 
 void	key3(mlx_key_data_t k, t_vars *vars, int *cmd)
@@ -109,7 +115,7 @@ void	key(mlx_key_data_t k, void *vvars)
 	else if (k.key == MLX_KEY_SLASH)
 		vars->color.value = 0x11111100;
 	else if (k.key == MLX_KEY_ESCAPE)
-		win_close(vars, 0);
+		vars->running = 0;
 	else
 		key2(k, vars, &cmd);
 	vars->update = cmd;

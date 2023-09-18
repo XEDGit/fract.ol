@@ -40,7 +40,7 @@ Commands:\n\
 \t[ESC]:		Exit\n"
 # define ERR_MSG "Program terminated. An error occourred\n"
 # define P_SIZE 16
-# define NTHREADS 20
+# define NTHREADS 5
 # define TASK_SIZE 2
 #ifdef BENCH_AUTO
 # define BENCH_START static int limit = 0; if (limit++ == 250) win_close(vars, ""); struct timespec start, end; clock_gettime(CLOCK_REALTIME, &start);
@@ -89,22 +89,29 @@ struct								s_instance_variables;
 typedef struct s_thread_variables
 {
 	pthread_t						thread;
-	pthread_mutex_t					mutex;
 	t_complex						complex;
 	struct s_instance_variables		*vars;
 	int								x;
 	int								y;
 }	t_threadvars;
 
+typedef struct s_task
+{
+	int	starty;
+	int	count;
+}	t_task;
+
 typedef struct s_instance_variables
 {
 	mlx_t			*mlx;
 	mlx_image_t		*i;
-	int				*tasks;
+	t_task			*tasks;
 	int				tasks_index;
 	pthread_mutex_t	task_lock;
 	pthread_mutex_t	task_end;
 	pthread_cond_t	task_cond;
+	pthread_cond_t	work_cond;
+	int				working_threads;
 	bool			running;
 	t_threadvars	threads[NTHREADS + 1];
 	bool			type;

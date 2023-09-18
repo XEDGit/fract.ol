@@ -52,12 +52,21 @@ clean:
 fclean:
 	rm -rf $(OBJ_DIR) $(NAME) build
 
-re: fclean all
+re: clean all
 
-d: DEBUG = -g3 -fsanitize=thread
+d: DEBUG = -g3 -fsanitize=address
+d: LFLAGS = $(INC) $(LIBFLAGS)
+d: CFLAGS := $(INC) -Wall -Wextra -Werror -c
 d: $(1)
 
+t: DEBUG = -g3 -fsanitize=thread
+# t: LFLAGS = $(INC) $(LIBFLAGS)
+# t: CFLAGS := $(INC) -Wall -Wextra -Werror -c
+t: $(1)
+
 s: DEBUG = -g3
+s: LFLAGS = $(INC) $(LIBFLAGS)
+s: CFLAGS := $(INC) -Wall -Wextra -Werror -c
 s: $(1)
 
 bench: DEBUG = -D BENCH

@@ -39,8 +39,8 @@ void	zoom(double xstep, double ystep, void *vvars)
 	}
 	else
 		return ;
-	vars->update = true;
 	pthread_mutex_unlock(&vars->task_end);
+	vars->update = true;
 }
 
 void	shift_zoom(t_vars *vars, int x, int y, int direction)

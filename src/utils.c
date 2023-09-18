@@ -31,22 +31,21 @@ int	win_close(t_vars *vars, char *msg)
 
 	if (vars)
 	{
-		if (vars->running == 1)
+		if (vars->running == true)
 		{
 			pthread_mutex_lock(&vars->task_lock);
 			vars->tasks_index = 0;
-			vars->running = 0;
+			vars->running = false;
 			pthread_mutex_unlock(&vars->task_lock);
 			pthread_cond_broadcast(&vars->task_cond);
 			i = -1;
 			while (++i < NTHREADS)
-			{
 				pthread_join(vars->threads[i].thread, 0);
-				pthread_mutex_destroy(&vars->threads[i].mutex);
-			}
 		}
 		pthread_mutex_destroy(&vars->task_lock);
+		pthread_mutex_destroy(&vars->task_end);
 		pthread_cond_destroy(&vars->task_cond);
+		pthread_cond_destroy(&vars->work_cond);
 		free(vars->tasks);
 		if (vars->mlx)
 		{
@@ -84,4 +83,5 @@ void	reset_zoom(t_vars *vars)
 	else
 		vars->zoom = (t_coords){-2 * ((double)vars->x_res / \
 			vars->y_res), 2 * ((double)vars->x_res / vars->y_res), -2, 2};
+	vars->update = true;
 }
