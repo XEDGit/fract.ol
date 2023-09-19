@@ -40,7 +40,7 @@ Commands:\n\
 \t[ESC]:		Exit\n"
 # define ERR_MSG "Program terminated. An error occourred\n"
 # define P_SIZE 16
-# define NTHREADS 5
+# define NTHREADS 30
 # define TASK_SIZE 2
 #ifdef BENCH_AUTO
 # define BENCH_START static int limit = 0; if (limit++ == 250) win_close(vars, ""); struct timespec start, end; clock_gettime(CLOCK_REALTIME, &start);

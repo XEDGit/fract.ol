@@ -32,6 +32,7 @@ void	resize(int width, int height, void *vvars)
 		new_tasks[i] = vars->tasks[i];
 		i++;
 	}
+	new_tasks[i].starty = -1;
 	pthread_mutex_lock(&vars->task_end);
 	vars->x_res = width;
 	vars->y_res = height;

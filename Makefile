@@ -41,7 +41,7 @@ $(OBJ_DIR):
 	mkdir -p $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS) | $(OBJ_DIR)
-	$(CC) $< $(CFLAGS) $(DEBUG) -o $@
+	gcc $< $(CFLAGS) $(DEBUG) -o $@
 
 $(MLX):
 	cmake -S MLX42 -B build
