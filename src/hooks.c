@@ -19,7 +19,7 @@ void	resize(int width, int height, void *vvars)
 	int		i;
 
 	vars = (t_vars *)vvars;
-	new_tasks = malloc((height / TASK_SIZE) * sizeof(t_task) * 2);
+	new_tasks = malloc((height / NTHREADS) * sizeof(t_task) * 2);
 	if (!new_tasks)
 	{
 		vars->running = 0;

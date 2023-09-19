@@ -83,19 +83,21 @@ void	draw_set(t_vars *vars)
 {
 	static int			nthreads = 0;
 	int					i;
+	int					task_size;
 
 	pthread_mutex_lock(&vars->task_end);
 	pthread_mutex_lock(&vars->task_lock);
 	vars->tasks_index = 0;
 	i = 0;
-	while (i * TASK_SIZE + TASK_SIZE <= vars->y_res)
+	task_size = vars->y_res / NTHREADS;
+	while (i * task_size + task_size <= vars->y_res)
 	{
-		vars->tasks[i] = (t_task){i * TASK_SIZE, TASK_SIZE};
+		vars->tasks[i] = (t_task){i * task_size, task_size};
 		i++;
 	}
-	if (i * TASK_SIZE < vars->y_res)
+	if (i * task_size < vars->y_res)
 	{
-		vars->tasks[i] = (t_task){i * TASK_SIZE, vars->y_res - (i * TASK_SIZE) - 1};
+		vars->tasks[i] = (t_task){i * task_size, vars->y_res - (i * task_size) - 1};
 		i++;
 	}
 	vars->tasks[i].starty = -1;
@@ -195,7 +197,7 @@ int	main(int argc, char **argv)
 	}
 	(void)argv;
 	vars = (t_vars){0};
-	vars.tasks = malloc((1000 / TASK_SIZE) * sizeof(t_task) * 2);
+	vars.tasks = malloc((1000 / NTHREADS) * sizeof(t_task) * 2);
 	if (!vars.tasks)
 		win_close(0, "Failed allocating space for task queue");
 	initialize_vars(&vars);

@@ -41,12 +41,11 @@ Commands:\n\
 # define ERR_MSG "Program terminated. An error occourred\n"
 # define P_SIZE 16
 # define NTHREADS 30
-# define TASK_SIZE 2
 #ifdef BENCH_AUTO
 # define BENCH_START static int limit = 0; if (limit++ == 250) win_close(vars, ""); struct timespec start, end; clock_gettime(CLOCK_REALTIME, &start);
 # define BENCH_END clock_gettime(CLOCK_REALTIME, &end); printf("%lf\n", ((end.tv_sec * 1e9 + end.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec)) / 1000000000);
 # define BENCH_AUTOZOOM 1
-# define BENCH_ZOOM_COORDINATES 143, 520
+# define BENCH_ZOOM_COORDINATES 600, 524
 #elif defined BENCH
 # define BENCH_START struct timespec start, end; clock_gettime(CLOCK_REALTIME, &start);
 # define BENCH_END clock_gettime(CLOCK_REALTIME, &end); printf("%lf\n", ((end.tv_sec * 1e9 + end.tv_nsec) - (start.tv_sec * 1e9 + start.tv_nsec)) / 1000000000);
